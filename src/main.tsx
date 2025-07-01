@@ -720,6 +720,7 @@ const WillsAtticApp: React.FC = () => {
             owned: true,
             estimatedValue: 350,
             image: '🔥',
+            imageUrl: 'https://images.pokemontcg.io/base1/4_hires.png',
             type: 'Fire',
             description: 'A Fire-type Pokémon. Charizard is the evolved form of Charmeleon.',
             lastUpdated: '2 days ago',
@@ -734,6 +735,7 @@ const WillsAtticApp: React.FC = () => {
             owned: true,
             estimatedValue: 280,
             image: '💧',
+            imageUrl: 'https://images.pokemontcg.io/base1/2_hires.png',
             type: 'Water',
             description: 'A Water-type Pokémon. Blastoise is the evolved form of Wartortle.',
             lastUpdated: '1 week ago',
@@ -1007,8 +1009,16 @@ const WillsAtticApp: React.FC = () => {
                 <div className="flex items-start justify-between">
                   <div className="flex items-center gap-3">
                     <div className="relative">
-                      <div className="text-3xl bg-gradient-to-br from-blue-400 to-purple-500 rounded-lg w-12 h-12 flex items-center justify-center">
-                        {item.image}
+                      <div className="bg-gradient-to-br from-blue-400 to-purple-500 rounded-lg w-12 h-12 flex items-center justify-center overflow-hidden">
+                        {item.imageUrl ? (
+                          <img 
+                            src={item.imageUrl} 
+                            alt={item.name} 
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <span className="text-3xl">{item.image}</span>
+                        )}
                       </div>
                       {!item.owned && (
                         <div className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full flex items-center justify-center">
@@ -1105,6 +1115,7 @@ const WillsAtticApp: React.FC = () => {
             owned: true,
             estimatedValue: 350,
             image: '🔥',
+            imageUrl: 'https://images.pokemontcg.io/base1/4_hires.png',
             type: 'Fire',
             description: 'A Fire-type Pokémon. Charizard is the evolved form of Charmeleon.',
             lastUpdated: '2 days ago',
@@ -1119,6 +1130,7 @@ const WillsAtticApp: React.FC = () => {
             owned: true,
             estimatedValue: 280,
             image: '💧',
+            imageUrl: 'https://images.pokemontcg.io/base1/2_hires.png',
             type: 'Water',
             description: 'A Water-type Pokémon. Blastoise is the evolved form of Wartortle.',
             lastUpdated: '1 week ago',
@@ -1195,8 +1207,23 @@ const WillsAtticApp: React.FC = () => {
       setShowItemForm(false);
     };
 
-    const handleDeleteItem = (itemId: number) => {
+    const handleDeleteItem = async (itemId: number) => {
+      const itemToDelete = items.find(item => item.id === itemId);
+      
       if (confirm('Are you sure you want to delete this item?')) {
+        // Delete the image from Vercel Blob if it exists
+        if (itemToDelete?.imageUrl && itemToDelete.imageUrl.includes('blob.vercel-storage.com')) {
+          try {
+            const { del } = await import('@vercel/blob');
+            await del(itemToDelete.imageUrl);
+            console.log('Image deleted from Vercel Blob:', itemToDelete.imageUrl);
+          } catch (error) {
+            console.error('Failed to delete image from storage:', error);
+            // Continue with item deletion even if image deletion fails
+          }
+        }
+        
+        // Remove item from local state
         setItems(prev => prev.filter(item => item.id !== itemId));
       }
     };
@@ -1297,8 +1324,16 @@ const WillsAtticApp: React.FC = () => {
                   <CardHeader className="pb-3">
                     <div className="flex items-start justify-between">
                       <div className="flex items-center gap-3">
-                        <div className="text-3xl bg-gradient-to-br from-blue-400 to-purple-500 rounded-lg w-12 h-12 flex items-center justify-center">
-                          {item.image}
+                        <div className="bg-gradient-to-br from-blue-400 to-purple-500 rounded-lg w-12 h-12 flex items-center justify-center overflow-hidden">
+                          {item.imageUrl ? (
+                            <img 
+                              src={item.imageUrl} 
+                              alt={item.name} 
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            <span className="text-3xl">{item.image}</span>
+                          )}
                         </div>
                         <div className="flex-1">
                           <CardTitle className="text-lg">{item.name}</CardTitle>
@@ -1363,15 +1398,92 @@ const WillsAtticApp: React.FC = () => {
       type: item?.type || '',
       description: item?.description || '',
       image: item?.image || '🎯',
+      imageUrl: item?.imageUrl || '',
       rarity: item?.rarity || 'common',
       condition: item?.condition || 'Mint',
       owned: item?.owned ?? true,
       estimatedValue: item?.estimatedValue || 0,
     });
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const [selectedFile, setSelectedFile] = React.useState<File | null>(null);
+    const [previewUrl, setPreviewUrl] = React.useState<string>(item?.imageUrl || '');
+    const [uploading, setUploading] = React.useState(false);
+    const [uploadError, setUploadError] = React.useState<string | null>(null);
+    const fileInputRef = React.useRef<HTMLInputElement>(null);
+
+    const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
+      if (file) {
+        // Validate file type
+        if (!file.type.startsWith('image/')) {
+          setUploadError('Please select an image file');
+          return;
+        }
+        
+        // Validate file size (max 5MB)
+        if (file.size > 5 * 1024 * 1024) {
+          setUploadError('Image must be less than 5MB');
+          return;
+        }
+        
+        setSelectedFile(file);
+        setUploadError(null);
+        
+        // Create preview URL
+        const url = URL.createObjectURL(file);
+        setPreviewUrl(url);
+      }
+    };
+
+    const uploadImage = async (): Promise<string | null> => {
+      if (!selectedFile) return null;
+      
+      setUploading(true);
+      setUploadError(null);
+      
+      try {
+        const { put } = await import('@vercel/blob');
+        const filename = `items/${Date.now()}-${selectedFile.name.replace(/[^a-zA-Z0-9.-]/g, '')}`;
+        const blob = await put(filename, selectedFile, {
+          access: 'public',
+        });
+        return blob.url;
+      } catch (error) {
+        console.error('Upload error:', error);
+        setUploadError('Failed to upload image. Please try again.');
+        return null;
+      } finally {
+        setUploading(false);
+      }
+    };
+
+    const handleSubmit = async (e: React.FormEvent) => {
       e.preventDefault();
-      onSave(item ? { ...item, ...formData } : formData);
+      
+      let imageUrl = formData.imageUrl;
+      
+      // Upload new image if selected
+      if (selectedFile) {
+        const uploadedUrl = await uploadImage();
+        if (uploadedUrl) {
+          imageUrl = uploadedUrl;
+        } else {
+          // Don't submit if upload failed
+          return;
+        }
+      }
+      
+      const updatedFormData = { ...formData, imageUrl };
+      onSave(item ? { ...item, ...updatedFormData } : updatedFormData);
+    };
+
+    const clearImage = () => {
+      setSelectedFile(null);
+      setPreviewUrl('');
+      setFormData(prev => ({ ...prev, imageUrl: '' }));
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
     };
 
     return (
@@ -1407,13 +1519,76 @@ const WillsAtticApp: React.FC = () => {
                   placeholder="e.g., Fire, Jedi, etc."
                 />
               </div>
-              <div>
-                <label className="text-sm font-medium mb-2 block">Image (Emoji)</label>
-                <Input
-                  value={formData.image}
-                  onChange={(e) => setFormData(prev => ({ ...prev, image: e.target.value }))}
-                  placeholder="🎯"
-                />
+              <div className="md:col-span-2">
+                <label className="text-sm font-medium mb-2 block">Image</label>
+                <div className="space-y-3">
+                  {/* Image preview */}
+                  {(previewUrl || formData.image) && (
+                    <div className="flex items-center gap-4 p-3 border rounded-lg bg-muted/30">
+                      <div className="w-16 h-16 rounded-lg overflow-hidden bg-background border flex items-center justify-center">
+                        {previewUrl ? (
+                          <img 
+                            src={previewUrl} 
+                            alt="Preview" 
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <span className="text-2xl">{formData.image}</span>
+                        )}
+                      </div>
+                      <div className="flex-1">
+                        <p className="text-sm font-medium">
+                          {selectedFile ? selectedFile.name : (previewUrl ? 'Current image' : 'Emoji')}
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          {selectedFile ? `${(selectedFile.size / 1024 / 1024).toFixed(2)} MB` : ''}
+                        </p>
+                      </div>
+                      <Button 
+                        type="button" 
+                        variant="outline" 
+                        size="sm" 
+                        onClick={clearImage}
+                        className="shrink-0"
+                      >
+                        Remove
+                      </Button>
+                    </div>
+                  )}
+                  
+                  {/* Upload section */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div>
+                      <label className="text-xs font-medium mb-1 block text-muted-foreground">Upload Image</label>
+                      <input
+                        ref={fileInputRef}
+                        type="file"
+                        accept="image/*"
+                        onChange={handleFileSelect}
+                        className="w-full text-sm file:mr-3 file:py-2 file:px-3 file:rounded file:border-0 file:bg-primary file:text-primary-foreground hover:file:bg-primary/90 file:cursor-pointer cursor-pointer"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-xs font-medium mb-1 block text-muted-foreground">Or Use Emoji</label>
+                      <Input
+                        value={formData.image}
+                        onChange={(e) => setFormData(prev => ({ ...prev, image: e.target.value }))}
+                        placeholder="🎯"
+                        className="text-center"
+                      />
+                    </div>
+                  </div>
+                  
+                  {uploadError && (
+                    <p className="text-sm text-destructive bg-destructive/10 p-2 rounded">
+                      {uploadError}
+                    </p>
+                  )}
+                  
+                  <p className="text-xs text-muted-foreground">
+                    Upload an image (max 5MB) or use an emoji. Images will be stored securely on Vercel Blob.
+                  </p>
+                </div>
               </div>
               <div>
                 <label className="text-sm font-medium mb-2 block">Rarity</label>
@@ -1477,10 +1652,17 @@ const WillsAtticApp: React.FC = () => {
               />
             </div>
             <div className="flex gap-3">
-              <Button type="submit" className="flex-1">
-                {item ? 'Update Item' : 'Add Item'}
+              <Button type="submit" className="flex-1" disabled={uploading}>
+                {uploading ? (
+                  <div className="flex items-center gap-2">
+                    <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"></div>
+                    Uploading...
+                  </div>
+                ) : (
+                  item ? 'Update Item' : 'Add Item'
+                )}
               </Button>
-              <Button type="button" variant="outline" onClick={onCancel} className="flex-1">
+              <Button type="button" variant="outline" onClick={onCancel} className="flex-1" disabled={uploading}>
                 Cancel
               </Button>
             </div>
