@@ -1,6 +1,6 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
-import { Search, Grid3X3, List, Clock, DollarSign, ArrowLeft, Star, Eye, Heart, Filter } from 'lucide-react';
+import { Search, Grid3X3, List, Clock, DollarSign, ArrowLeft, Star, Eye, Heart, Filter, Package } from 'lucide-react';
 
 import './globals.css';
 import { Button } from './components/ui/button';
@@ -234,7 +234,6 @@ const WillsAtticApp: React.FC = () => {
       ownedItems: 142,
       estimatedValue: 1250,
       recentActivity: '2 items added this week',
-      image: '🟡',
       rarity: 'legendary' as const,
       year: 1998,
     },
@@ -247,7 +246,6 @@ const WillsAtticApp: React.FC = () => {
       ownedItems: 45,
       estimatedValue: 890,
       recentActivity: '1 item added this month',
-      image: '⭐',
       rarity: 'epic' as const,
       year: 2013,
     },
@@ -260,7 +258,6 @@ const WillsAtticApp: React.FC = () => {
       ownedItems: 18,
       estimatedValue: 320,
       recentActivity: 'No recent activity',
-      image: '🦸',
       rarity: 'rare' as const,
       year: 2002,
     },
@@ -273,7 +270,6 @@ const WillsAtticApp: React.FC = () => {
       ownedItems: 94,
       estimatedValue: 450,
       recentActivity: '5 items added this week',
-      image: '🎭',
       rarity: 'common' as const,
       year: 2010,
     },
@@ -286,7 +282,6 @@ const WillsAtticApp: React.FC = () => {
       ownedItems: 44,
       estimatedValue: 2100,
       recentActivity: '1 item added last month',
-      image: '🔮',
       rarity: 'legendary' as const,
       year: 1993,
     },
@@ -299,7 +294,6 @@ const WillsAtticApp: React.FC = () => {
       ownedItems: 47,
       estimatedValue: 680,
       recentActivity: '3 items added this month',
-      image: '🦇',
       rarity: 'epic' as const,
       year: 2020,
     },
@@ -416,8 +410,8 @@ const WillsAtticApp: React.FC = () => {
                   <CardHeader className="pb-3">
                     <div className="flex items-start justify-between">
                       <div className="flex items-center gap-3">
-                        <div className="text-4xl bg-gradient-to-br from-pink-400 to-red-500 rounded-xl w-16 h-16 flex items-center justify-center shrink-0">
-                          {collection.image}
+                        <div className="bg-gradient-to-br from-pink-400 to-red-500 rounded-xl w-16 h-16 flex items-center justify-center shrink-0">
+                          <Package className="h-8 w-8 text-white" />
                         </div>
                         <div className="min-w-0 flex-1">
                           <CardTitle className="text-xl leading-tight">{collection.name}</CardTitle>
@@ -615,8 +609,8 @@ const WillsAtticApp: React.FC = () => {
               <CardHeader className="pb-3">
                 <div className="flex items-start justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="text-4xl bg-gradient-to-br from-pink-400 to-red-500 rounded-xl w-16 h-16 flex items-center justify-center shrink-0">
-                      {collection.image}
+                    <div className="bg-gradient-to-br from-pink-400 to-red-500 rounded-xl w-16 h-16 flex items-center justify-center shrink-0">
+                      <Package className="h-8 w-8 text-white" />
                     </div>
                     <div className="min-w-0 flex-1">
                       <CardTitle className="text-xl leading-tight">{collection.name}</CardTitle>
@@ -719,7 +713,6 @@ const WillsAtticApp: React.FC = () => {
             condition: 'Near Mint',
             owned: true,
             estimatedValue: 350,
-            image: '🔥',
             imageUrl: 'https://images.pokemontcg.io/base1/4_hires.png',
             type: 'Fire',
             description: 'A Fire-type Pokémon. Charizard is the evolved form of Charmeleon.',
@@ -734,7 +727,6 @@ const WillsAtticApp: React.FC = () => {
             condition: 'Lightly Played',
             owned: true,
             estimatedValue: 280,
-            image: '💧',
             imageUrl: 'https://images.pokemontcg.io/base1/2_hires.png',
             type: 'Water',
             description: 'A Water-type Pokémon. Blastoise is the evolved form of Wartortle.',
@@ -749,7 +741,6 @@ const WillsAtticApp: React.FC = () => {
             condition: 'Not Owned',
             owned: false,
             estimatedValue: 220,
-            image: '🌿',
             type: 'Grass',
             description: 'A Grass-type Pokémon. Venusaur is the evolved form of Ivysaur.',
             lastUpdated: null,
@@ -763,7 +754,6 @@ const WillsAtticApp: React.FC = () => {
             condition: 'Mint',
             owned: true,
             estimatedValue: 180,
-            image: '⚡',
             type: 'Electric',
             description: 'An Electric-type Pokémon. The most famous Pokémon.',
             lastUpdated: '3 days ago',
@@ -777,7 +767,6 @@ const WillsAtticApp: React.FC = () => {
             condition: 'Near Mint',
             owned: true,
             estimatedValue: 85,
-            image: '🔮',
             type: 'Psychic',
             description: 'A Psychic-type Pokémon with incredible mental powers.',
             lastUpdated: '5 days ago',
@@ -791,7 +780,6 @@ const WillsAtticApp: React.FC = () => {
             condition: 'Not Owned',
             owned: false,
             estimatedValue: 65,
-            image: '💪',
             type: 'Fighting',
             description: 'A Fighting-type Pokémon known for its incredible strength.',
             lastUpdated: null,
@@ -807,7 +795,6 @@ const WillsAtticApp: React.FC = () => {
             condition: 'Mint',
             owned: true,
             estimatedValue: 45,
-            image: '🖤',
             type: 'Sith Lord',
             description: 'The Dark Lord of the Sith in his iconic black armor.',
             lastUpdated: '1 day ago',
@@ -821,7 +808,6 @@ const WillsAtticApp: React.FC = () => {
             condition: 'Near Mint',
             owned: true,
             estimatedValue: 38,
-            image: '💫',
             type: 'Jedi',
             description: 'Young Jedi Knight in his Return of the Jedi outfit.',
             lastUpdated: '4 days ago',
@@ -835,7 +821,6 @@ const WillsAtticApp: React.FC = () => {
             condition: 'Not Owned',
             owned: false,
             estimatedValue: 55,
-            image: '🚀',
             type: 'Bounty Hunter',
             description: 'The galaxy\'s most feared bounty hunter.',
             lastUpdated: null,
@@ -1017,7 +1002,9 @@ const WillsAtticApp: React.FC = () => {
                             className="w-full h-full object-cover"
                           />
                         ) : (
-                          <span className="text-3xl">{item.image}</span>
+                          <div className="w-full h-full bg-muted flex items-center justify-center">
+                            <Eye className="h-6 w-6 text-muted-foreground" />
+                          </div>
                         )}
                       </div>
                       {!item.owned && (
@@ -1114,7 +1101,6 @@ const WillsAtticApp: React.FC = () => {
             condition: 'Near Mint',
             owned: true,
             estimatedValue: 350,
-            image: '🔥',
             imageUrl: 'https://images.pokemontcg.io/base1/4_hires.png',
             type: 'Fire',
             description: 'A Fire-type Pokémon. Charizard is the evolved form of Charmeleon.',
@@ -1129,7 +1115,6 @@ const WillsAtticApp: React.FC = () => {
             condition: 'Lightly Played',
             owned: true,
             estimatedValue: 280,
-            image: '💧',
             imageUrl: 'https://images.pokemontcg.io/base1/2_hires.png',
             type: 'Water',
             description: 'A Water-type Pokémon. Blastoise is the evolved form of Wartortle.',
@@ -1144,7 +1129,6 @@ const WillsAtticApp: React.FC = () => {
             condition: 'Not Owned',
             owned: false,
             estimatedValue: 220,
-            image: '🌿',
             type: 'Grass',
             description: 'A Grass-type Pokémon. Venusaur is the evolved form of Ivysaur.',
             lastUpdated: null,
@@ -1160,7 +1144,6 @@ const WillsAtticApp: React.FC = () => {
             condition: 'Mint',
             owned: true,
             estimatedValue: 45,
-            image: '🖤',
             type: 'Sith Lord',
             description: 'The Dark Lord of the Sith in his iconic black armor.',
             lastUpdated: '1 day ago',
@@ -1174,7 +1157,6 @@ const WillsAtticApp: React.FC = () => {
             condition: 'Near Mint',
             owned: true,
             estimatedValue: 38,
-            image: '💫',
             type: 'Jedi',
             description: 'Young Jedi Knight in his Return of the Jedi outfit.',
             lastUpdated: '4 days ago',
@@ -1252,8 +1234,8 @@ const WillsAtticApp: React.FC = () => {
                 >
                   <CardHeader className="pb-3">
                     <div className="flex items-center gap-3">
-                      <div className="text-4xl bg-gradient-to-br from-pink-400 to-red-500 rounded-xl w-16 h-16 flex items-center justify-center">
-                        {collection.image}
+                      <div className="bg-gradient-to-br from-pink-400 to-red-500 rounded-xl w-16 h-16 flex items-center justify-center">
+                        <Package className="h-8 w-8 text-white" />
                       </div>
                       <div className="flex-1">
                         <CardTitle className="text-xl">{collection.name}</CardTitle>
@@ -1332,7 +1314,9 @@ const WillsAtticApp: React.FC = () => {
                               className="w-full h-full object-cover"
                             />
                           ) : (
-                            <span className="text-3xl">{item.image}</span>
+                            <div className="w-full h-full bg-muted flex items-center justify-center">
+                              <Eye className="h-6 w-6 text-muted-foreground" />
+                            </div>
                           )}
                         </div>
                         <div className="flex-1">
@@ -1397,7 +1381,6 @@ const WillsAtticApp: React.FC = () => {
       number: item?.number || '',
       type: item?.type || '',
       description: item?.description || '',
-      image: item?.image || '🎯',
       imageUrl: item?.imageUrl || '',
       rarity: item?.rarity || 'common',
       condition: item?.condition || 'Mint',
@@ -1523,22 +1506,18 @@ const WillsAtticApp: React.FC = () => {
                 <label className="text-sm font-medium mb-2 block">Image</label>
                 <div className="space-y-3">
                   {/* Image preview */}
-                  {(previewUrl || formData.image) && (
+                  {previewUrl && (
                     <div className="flex items-center gap-4 p-3 border rounded-lg bg-muted/30">
                       <div className="w-16 h-16 rounded-lg overflow-hidden bg-background border flex items-center justify-center">
-                        {previewUrl ? (
-                          <img 
-                            src={previewUrl} 
-                            alt="Preview" 
-                            className="w-full h-full object-cover"
-                          />
-                        ) : (
-                          <span className="text-2xl">{formData.image}</span>
-                        )}
+                        <img 
+                          src={previewUrl} 
+                          alt="Preview" 
+                          className="w-full h-full object-cover"
+                        />
                       </div>
                       <div className="flex-1">
                         <p className="text-sm font-medium">
-                          {selectedFile ? selectedFile.name : (previewUrl ? 'Current image' : 'Emoji')}
+                          {selectedFile ? selectedFile.name : 'Current image'}
                         </p>
                         <p className="text-xs text-muted-foreground">
                           {selectedFile ? `${(selectedFile.size / 1024 / 1024).toFixed(2)} MB` : ''}
@@ -1557,26 +1536,15 @@ const WillsAtticApp: React.FC = () => {
                   )}
                   
                   {/* Upload section */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    <div>
-                      <label className="text-xs font-medium mb-1 block text-muted-foreground">Upload Image</label>
-                      <input
-                        ref={fileInputRef}
-                        type="file"
-                        accept="image/*"
-                        onChange={handleFileSelect}
-                        className="w-full text-sm file:mr-3 file:py-2 file:px-3 file:rounded file:border-0 file:bg-primary file:text-primary-foreground hover:file:bg-primary/90 file:cursor-pointer cursor-pointer"
-                      />
-                    </div>
-                    <div>
-                      <label className="text-xs font-medium mb-1 block text-muted-foreground">Or Use Emoji</label>
-                      <Input
-                        value={formData.image}
-                        onChange={(e) => setFormData(prev => ({ ...prev, image: e.target.value }))}
-                        placeholder="🎯"
-                        className="text-center"
-                      />
-                    </div>
+                  <div>
+                    <label className="text-xs font-medium mb-1 block text-muted-foreground">Upload Image</label>
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept="image/*"
+                      onChange={handleFileSelect}
+                      className="w-full text-sm file:mr-3 file:py-2 file:px-3 file:rounded file:border-0 file:bg-primary file:text-primary-foreground hover:file:bg-primary/90 file:cursor-pointer cursor-pointer"
+                    />
                   </div>
                   
                   {uploadError && (
@@ -1586,7 +1554,7 @@ const WillsAtticApp: React.FC = () => {
                   )}
                   
                   <p className="text-xs text-muted-foreground">
-                    Upload an image (max 5MB) or use an emoji. Images will be stored securely on Vercel Blob.
+                    Upload an image (max 5MB). Images will be stored securely on Vercel Blob.
                   </p>
                 </div>
               </div>

@@ -1,0 +1,406 @@
+# Will's Attic - React Native UI Requirements
+
+## Project Overview
+Will's Attic mobile application built with React Native, providing a comprehensive collection management experience optimized for mobile devices with offline capabilities and real-time features.
+
+## Technology Stack
+- **Framework**: React Native 0.72+
+- **Navigation**: React Navigation 6.x
+- **State Management**: Redux Toolkit + RTK Query
+- **GraphQL Client**: Apollo Client with offline support
+- **Authentication**: Google Sign-In (react-native-google-signin)
+- **UI Components**: React Native Elements / NativeBase / Custom Design System
+- **Image Handling**: React Native Fast Image
+- **Camera**: React Native Camera or Expo Camera
+- **Push Notifications**: React Native Firebase / Expo Notifications
+- **Offline Storage**: AsyncStorage + Apollo Cache
+- **Testing**: Jest + React Native Testing Library
+- **Development**: Expo Development Build or React Native CLI
+
+## App Architecture
+
+### Navigation Structure
+```
+App
+├── Auth Stack
+│   ├── Welcome Screen
+│   ├── Google Sign-In Screen
+│   └── Complete Profile Screen (first-time users)
+├── Main Tab Navigator
+│   ├── Collection Tab
+│   │   ├── Collection List Screen
+│   │   ├── Collection Detail Screen
+│   │   ├── Item Detail Screen
+│   │   ├── Add Item Screen
+│   │   ├── Edit Item Screen
+│   │   └── Bulk Import Screen
+│   ├── Wishlist Tab
+│   │   ├── Wishlist Screen
+│   │   ├── Trade Matches Screen
+│   │   ├── Add to Wishlist Screen
+│   │   └── Wishlist Detail Screen
+│   ├── Showcase Tab
+│   │   ├── My Showcases Screen
+│   │   ├── Browse Showcases Screen
+│   │   ├── Showcase Detail Screen
+│   │   ├── Create Showcase Screen
+│   │   └── Edit Showcase Screen
+│   ├── Trade Tab
+│   │   ├── Active Trades Screen
+│   │   ├── Trade Offers Screen
+│   │   ├── Trade History Screen
+│   │   ├── Create Trade Offer Screen
+│   │   └── Trade Detail Screen
+│   └── Profile Tab
+│       ├── Profile Screen
+│       ├── Settings Screen
+│       ├── Premium Upgrade Screen
+│       ├── Analytics Screen (Premium)
+│       ├── Privacy Settings Screen
+│       └── Help & Support Screen
+└── Modal Screens
+    ├── Camera/Scanner Screen
+    ├── Image Gallery Screen
+    ├── Search/Filter Modal
+    ├── Notification Details Modal
+    ├── Share Showcase Modal
+    ├── Trade Offer Details Modal
+    └── User Profile Modal
+```
+
+## Screen Specifications
+
+### Authentication Flow
+
+#### Welcome Screen
+- App branding and introduction with feature showcase
+- Google Sign-In button with proper OAuth integration
+- Privacy policy and terms of service links
+- Guest browse mode option for non-authenticated users
+- Animated feature cards highlighting key capabilities
+
+#### Complete Profile Screen (First-time users)
+- Username selection with real-time availability checking
+- Profile picture selector (defaults to Google avatar)
+- Location selection for local trading features
+- Collection interests multi-select
+- Privacy preferences configuration
+- Push notification permissions setup
+- Form validation and error handling
+
+### Main Collection Screens
+
+#### Collection List Screen
+- Collection overview cards with completion progress bars
+- Quick stats dashboard (total items, value, completion %)
+- Category filtering tabs (All, Cards, Figures, Digital, Other)
+- Search bar with advanced filtering options
+- Grid/List view toggle
+- Pull-to-refresh functionality
+- Floating action button for quick item addition
+- Empty state with onboarding guidance
+
+#### Collection Detail Screen
+- Collection header with metadata and progress tracking
+- Filterable grid of collectables within collection
+- Owned vs. missing item indicators
+- Recent additions timeline
+- Collection completion insights
+- Quick add missing items workflow
+- Share collection progress functionality
+
+#### Item Detail Screen
+- High-resolution image gallery with zoom capabilities
+- Comprehensive item information display
+- Market value tracking and price history charts
+- Ownership details (condition, acquisition info, storage)
+- Component tracking for complex items (toys with parts)
+- Trade/sale availability toggle controls
+- Watchers list and social proof indicators
+- Action buttons (edit, trade, sell, delete)
+
+#### Add/Edit Item Screen
+- Camera integration for image capture
+- Barcode scanning for automatic item identification
+- Manual item entry with smart suggestions
+- Condition assessment tools
+- Acquisition details form
+- Storage location tracking
+- Component checklist for complex items
+- Batch addition capabilities
+
+### Wishlist & Trading Screens
+
+#### Wishlist Screen
+- Priority-based item organization (High, Medium, Low)
+- Trade match notifications banner
+- Price alert configuration per item
+- Smart suggestions based on collection patterns
+- Quick add from browse functionality
+- Filter by category and availability
+- Expected value calculations
+
+#### Trade Matches Screen
+- AI-powered match scoring algorithm results
+- Mutual match highlighting
+- Trade value estimations with cash adjustments
+- User reputation and trade history display
+- One-tap trade initiation
+- Match dismissal and feedback options
+- Real-time match updates
+
+#### Trade Center Screen
+- Active trade offers management
+- Trade history with status tracking
+- Create new trade offer workflow
+- Trade reputation scoring display
+- Message threads for negotiations
+- Trade completion confirmation process
+- Dispute resolution access
+
+#### Trade Detail Screen
+- Comprehensive trade offer visualization
+- Item comparison tools
+- Negotiation message interface
+- Trade timeline and status updates
+- Accept/decline/counter-offer actions
+- Trade completion workflow
+- Rating and feedback system
+
+### Showcase Screens
+
+#### Showcase List Screen (My Showcases)
+- Personal showcase gallery
+- Creation tools and templates
+- Privacy settings management
+- Performance analytics (views, likes, shares)
+- Showcase categorization
+- Quick edit access
+
+#### Browse Showcases Screen
+- Discover public showcases
+- Category and tag filtering
+- Trending and featured showcases
+- Social engagement metrics
+- Follow/unfollow creators
+- Search functionality
+
+#### Showcase Detail Screen
+- Dynamic layout rendering (grid, timeline, story, comparison)
+- Social interaction tools (like, share, comment)
+- Creator profile integration
+- Item interaction and details
+- Related showcases suggestions
+- Edit mode for owners
+
+#### Create/Edit Showcase Screen
+- Drag-and-drop item arrangement
+- Layout template selection
+- Theme and styling customization
+- Item display options configuration
+- Privacy and sharing settings
+- Preview functionality
+- Save and publish workflow
+
+### Profile & Settings Screens
+
+#### Profile Screen
+- User information display
+- Collection statistics dashboard
+- Trade reputation and history
+- Public showcase gallery
+- Social connections (followers/following)
+- Achievement badges and milestones
+
+#### Settings Screen
+- Account management
+- Privacy controls
+- Notification preferences
+- App preferences (theme, language)
+- Data export options
+- Account deletion
+
+#### Premium Upgrade Screen
+- Feature comparison table
+- Subscription options and pricing
+- Payment integration
+- Free trial offerings
+- Feature previews and demos
+
+#### Analytics Screen (Premium)
+- Collection value trends
+- Market insights and recommendations
+- Trading performance metrics
+- Goal tracking and progress
+- Export capabilities
+- Custom date range analysis
+
+## Key UI Components
+
+### Reusable Components
+- **CollectionCard**: Grid/list item with progress indicators, stats, and actions
+- **ItemCard**: Collectible display with status badges, condition, and quick actions
+- **TradeMatchCard**: Match scoring, mutual indicators, and trade initiation
+- **WishlistCard**: Priority indicators, price alerts, and match notifications
+- **ShowcaseCard**: Theme preview, stats, and social engagement metrics
+- **SearchBar**: Universal search with filter access and suggestions
+- **FilterModal**: Advanced filtering with category-specific options
+- **ImageGallery**: Swipeable gallery with zoom and sharing capabilities
+- **CameraScanner**: Barcode scanning and image capture integration
+- **PriceChart**: Interactive price history visualization
+- **ProgressBar**: Collection completion and goal tracking
+- **NotificationBell**: Real-time notification indicator and access
+- **UserAvatar**: Profile picture with status indicators
+- **StatusBadges**: Condition, availability, and verification indicators
+
+### Specialized Components
+- **ComponentTracker**: Missing parts visualization for complex items
+- **TradeOfferBuilder**: Drag-and-drop trade creation interface
+- **ShowcaseBuilder**: Layout editor with real-time preview
+- **ValueCalculator**: Market price estimation and trending
+- **LocationPicker**: Geographic selection for local trading
+- **CategorySelector**: Multi-select with icons and descriptions
+- **ConditionPicker**: Visual condition assessment tools
+- **PrioritySelector**: Wishlist priority assignment interface
+
+## Data Management
+
+### Apollo Client Configuration
+- GraphQL endpoint configuration for Vercel backend
+- Authentication token management with Google OAuth
+- Offline caching strategy with cache persistence
+- Optimistic updates for better UX
+- Error handling and retry logic
+- Query batching and deduplication
+
+### Redux Store Structure
+- **Auth Slice**: User authentication state, Google tokens, profile completion
+- **UI Slice**: Theme, navigation, modals, search state
+- **Cache Slice**: Offline data management, sync status
+- **Notifications Slice**: Push notification state and preferences
+
+### Offline Support Strategy
+- Apollo cache persistence for core data
+- Queue system for mutations when offline
+- Conflict resolution for concurrent edits
+- Background sync when connectivity restored
+- Offline indicator and user feedback
+
+## Real-time Features
+
+### Push Notifications
+- Trade match notifications
+- Price alert notifications
+- Trade offer updates
+- Showcase interactions
+- System announcements
+- Customizable notification preferences
+
+### Live Updates
+- Real-time trade offer status changes
+- Live showcase view counts
+- Market price updates
+- New match notifications
+- Social interaction updates
+
+## Premium Features Integration
+- Feature gating with upgrade prompts
+- Premium-only component overlays
+- Trial period management
+- Subscription status tracking
+- Feature usage analytics
+- Graceful degradation for free users
+
+## Performance Optimizations
+
+### Image Handling
+- FastImage for caching and performance
+- Multiple image size variants
+- Lazy loading and preloading strategies
+- Image compression and optimization
+- Placeholder and skeleton loading states
+
+### List Performance
+- FlashList for large data sets
+- Virtual scrolling implementation
+- Item height estimation
+- Separator components optimization
+- Pull-to-refresh with minimal re-renders
+
+### Memory Management
+- Component unmounting cleanup
+- Image cache size limits
+- Background task management
+- Memory leak prevention
+- Performance monitoring integration
+
+## Accessibility Features
+- Screen reader compatibility
+- High contrast mode support
+- Font scaling respect
+- Touch target sizing
+- Alternative text for images
+- Keyboard navigation support
+
+## Security Considerations
+- Secure token storage
+- API request encryption
+- Image upload validation
+- User-generated content moderation
+- Privacy control enforcement
+- Data export and deletion capabilities
+
+## Testing Strategy
+
+### Unit Testing
+- Component rendering tests
+- Redux action and reducer tests
+- Utility function validation
+- Apollo Client mock testing
+- Navigation flow testing
+
+### Integration Testing
+- Authentication flow end-to-end
+- API integration testing
+- Offline functionality validation
+- Push notification handling
+- Image upload and processing
+
+### Performance Testing
+- Render performance profiling
+- Memory usage monitoring
+- Network request optimization
+- Battery usage assessment
+- Startup time measurement
+
+## Build and Deployment
+
+### Development Setup
+- Expo Development Build configuration
+- Environment variable management
+- Debug tools integration
+- Hot reloading setup
+- Simulator/device testing
+
+### Production Build
+- Code splitting and optimization
+- Bundle size minimization
+- Asset optimization
+- Performance profiling
+- Crash reporting integration
+
+### App Store Deployment
+- iOS App Store configuration
+- Google Play Store setup
+- App signing and security
+- Metadata and screenshots
+- Review and approval process
+
+### Analytics and Monitoring
+- User behavior tracking
+- Crash reporting (Bugsnag/Sentry)
+- Performance monitoring
+- Feature usage analytics
+- A/B testing framework
+
+This comprehensive React Native UI specification provides the foundation for building Will's Attic mobile application with Google Authentication, offline capabilities, real-time features, and premium functionality integration.

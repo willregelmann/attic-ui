@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Will's Attic - Collectibles Manager</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f8f9fa;
+        }
+        
+        /* Navigation */
+        .nav-container {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .nav {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: white;
+        }
+        
+        .nav-tabs {
+            display: flex;
+            gap: 0;
+            background: rgba(255,255,255,0.1);
+            border-radius: 25px;
+            padding: 5px;
+        }
+        
+        .nav-tab {
+            padding: 12px 20px;
+            background: none;
+            border: none;
+            color: rgba(255,255,255,0.8);
+            cursor: pointer;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .nav-tab:hover {
+            color: white;
+            background: rgba(255,255,255,0.1);
+        }
+        
+        .nav-tab.active {
+            background: white;
+            color: #667eea;
+            font-weight: 600;
+        }
+        
+        /* Content Container */
+        .app-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            min-height: calc(100vh - 80px);
+        }
+        
+        .screen {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .screen.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Welcome Screen */
+        .welcome-hero {
+            text-align: center;
+            background: white;
+            border-radius: 20px;
+            padding: 60px 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 40px;
+        }
+        
+        .welcome-title {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .welcome-subtitle {
+            font-size: 1.5rem;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        
+        .cta-button {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        
+        .cta-button:hover {
+            transform: scale(1.05);
+        }
+        
+        /* Collections Screen */
+        .collections-header {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        
+        .collections-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .collection-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .collection-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .collection-image {
+            height: 120px;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            border-radius: 10px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+        }
+        
+        .collection-name {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+        
+        .collection-progress {
+            color: #27ae60;
+            font-weight: 500;
+            margin-bottom: 10px;
+        }
+        
+        .progress-bar {
+            background: #ecf0f1;
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #27ae60, #2ecc71);
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+        
+        /* Auth Screen */
+        .auth-container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .auth-card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        .auth-steps {
+            margin-top: 30px;
+        }
+        
+        .auth-step {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            text-align: left;
+        }
+        
+        .step-number {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 20px;
+            flex-shrink: 0;
+        }
+        
+        .step-content h4 {
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+        
+        .step-content p {
+            color: #666;
+            margin: 0;
+        }
+        
+        /* Trading Screen */
+        .trading-dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        
+        .trading-section {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+        
+        .trade-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .trade-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            margin-right: 15px;
+        }
+        
+        .trade-info h5 {
+            margin-bottom: 5px;
+            color: #2c3e50;
+        }
+        
+        .trade-info p {
+            color: #666;
+            font-size: 0.9rem;
+            margin: 0;
+        }
+        
+        /* Profile Screen */
+        .profile-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .profile-header {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 3rem;
+            font-weight: bold;
+            margin: 0 auto 20px;
+        }
+        
+        .profile-name {
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+        
+        .profile-bio {
+            color: #666;
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+        }
+        
+        .profile-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .profile-stat {
+            text-align: center;
+        }
+        
+        .profile-stat-number {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #667eea;
+            display: block;
+        }
+        
+        .profile-stat-label {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-tabs {
+                display: none;
+            }
+            
+            .welcome-title {
+                font-size: 2rem;
+            }
+            
+            .app-container {
+                padding: 20px 15px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .collections-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <div class="nav-container">
+        <div class="nav">
+            <div class="logo">Will's Attic</div>
+            <div class="nav-tabs">
+                <button class="nav-tab active" onclick="showScreen('welcome')">🏠 Home</button>
+                <button class="nav-tab" onclick="showScreen('collections')">📚 Collections</button>
+                <button class="nav-tab" onclick="showScreen('auth')">🔐 Auth</button>
+                <button class="nav-tab" onclick="showScreen('trading')">💰 Trading</button>
+                <button class="nav-tab" onclick="showScreen('profile')">👤 Profile</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- App Container -->
+    <div class="app-container">
+        <!-- Welcome Screen -->
+        <div id="welcome" class="screen active">
+            <div class="welcome-hero">
+                <h1 class="welcome-title">Welcome to Will's Attic</h1>
+                <p class="welcome-subtitle">Your personal collectibles management platform</p>
+                <button class="cta-button" onclick="showScreen('collections')">Explore Collections</button>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-top: 40px;">
+                <div style="background: white; padding: 25px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+                    <div style="font-size: 2.5rem; margin-bottom: 15px;">🔐</div>
+                    <h3 style="margin-bottom: 10px; color: #2c3e50;">Google OAuth</h3>
+                    <p style="color: #666;">Fully implemented authentication with profile setup</p>
+                </div>
+                <div style="background: white; padding: 25px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+                    <div style="font-size: 2.5rem; margin-bottom: 15px;">📱</div>
+                    <h3 style="margin-bottom: 10px; color: #2c3e50;">Collection Dashboard</h3>
+                    <p style="color: #666;">Rich interface with stats and progress tracking</p>
+                </div>
+                <div style="background: white; padding: 25px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+                    <div style="font-size: 2.5rem; margin-bottom: 15px;">🚀</div>
+                    <h3 style="margin-bottom: 10px; color: #2c3e50;">React Native</h3>
+                    <p style="color: #666;">Cross-platform app with Laravel API backend</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Collections Screen -->
+        <div id="collections" class="screen">
+            <div class="collections-header">
+                <h2 style="font-size: 2.5rem; margin-bottom: 20px; color: #2c3e50;">Your Collections</h2>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <span class="stat-number">247</span>
+                        <span class="stat-label">Total Items</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-number">12</span>
+                        <span class="stat-label">Collections</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-number">$2,340</span>
+                        <span class="stat-label">Est. Value</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-number">89%</span>
+                        <span class="stat-label">Avg. Complete</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="collections-grid">
+                <div class="collection-card" onclick="openCollection('pokemon')">
+                    <div class="collection-image">🟡</div>
+                    <div class="collection-name">Pokemon Base Set</div>
+                    <div class="collection-progress">87% Complete (142/164)</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 87%;"></div>
+                    </div>
+                </div>
+
+                <div class="collection-card" onclick="openCollection('starwars')">
+                    <div class="collection-image">⭐</div>
+                    <div class="collection-name">Star Wars Black Series</div>
+                    <div class="collection-progress">65% Complete (45/69)</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 65%;"></div>
+                    </div>
+                </div>
+
+                <div class="collection-card" onclick="openCollection('marvel')">
+                    <div class="collection-image">🦸</div>
+                    <div class="collection-name">Marvel Legends</div>
+                    <div class="collection-progress">32% Complete (18/56)</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 32%;"></div>
+                    </div>
+                </div>
+
+                <div class="collection-card" onclick="openCollection('funko')">
+                    <div class="collection-image">🎭</div>
+                    <div class="collection-name">Funko Pop!</div>
+                    <div class="collection-progress">78% Complete (94/120)</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 78%;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Auth Screen -->
+        <div id="auth" class="screen">
+            <div class="auth-container">
+                <div class="auth-card">
+                    <h2 style="font-size: 2.5rem; margin-bottom: 20px; color: #2c3e50;">Authentication Flow</h2>
+                    <p style="color: #666; font-size: 1.1rem;">This shows the actual authentication implementation in the React Native app</p>
+                    
+                    <div class="auth-steps">
+                        <div class="auth-step">
+                            <div class="step-number">1</div>
+                            <div class="step-content">
+                                <h4>Welcome Screen</h4>
+                                <p>Gradient design with feature highlights and smooth onboarding flow</p>
+                            </div>
+                        </div>
+
+                        <div class="auth-step">
+                            <div class="step-number">2</div>
+                            <div class="step-content">
+                                <h4>Google Sign-In</h4>
+                                <p>Real Google OAuth integration with @react-native-google-signin</p>
+                            </div>
+                        </div>
+
+                        <div class="auth-step">
+                            <div class="step-number">3</div>
+                            <div class="step-content">
+                                <h4>Profile Setup</h4>
+                                <p>Form validation, interests selection, privacy settings</p>
+                            </div>
+                        </div>
+
+                        <div class="auth-step">
+                            <div class="step-number">4</div>
+                            <div class="step-content">
+                                <h4>Main App</h4>
+                                <p>Tab navigation to Collections, Trading, Showcase, and Profile</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Trading Screen -->
+        <div id="trading" class="screen">
+            <h2 style="font-size: 2.5rem; margin-bottom: 30px; color: #2c3e50; text-align: center;">Trading Platform</h2>
+            
+            <div class="trading-dashboard">
+                <div class="trading-section">
+                    <h3 class="section-title">🔥 Active Trades</h3>
+                    <div class="trade-item">
+                        <div class="trade-avatar">JD</div>
+                        <div class="trade-info">
+                            <h5>Trade with John_Doe</h5>
+                            <p>Pokemon Charizard for your Blastoise</p>
+                        </div>
+                    </div>
+                    <div class="trade-item">
+                        <div class="trade-avatar">SM</div>
+                        <div class="trade-info">
+                            <h5>Trade with StarWarsMax</h5>
+                            <p>Darth Vader figure for Luke Skywalker</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="trading-section">
+                    <h3 class="section-title">💫 Trade Matches</h3>
+                    <div class="trade-item">
+                        <div class="trade-avatar">MC</div>
+                        <div class="trade-info">
+                            <h5>MarvelCollector</h5>
+                            <p>Has: Spider-Man • Wants: Iron Man</p>
+                        </div>
+                    </div>
+                    <div class="trade-item">
+                        <div class="trade-avatar">PF</div>
+                        <div class="trade-info">
+                            <h5>PokeFan_2024</h5>
+                            <p>Has: Rare Pikachu • Wants: Mewtwo</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="trading-section">
+                    <h3 class="section-title">📝 Your Offers</h3>
+                    <div class="trade-item">
+                        <div class="trade-avatar">VG</div>
+                        <div class="trade-info">
+                            <h5>VintageGamer</h5>
+                            <p>Offered: Zelda figure for Mario</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Profile Screen -->
+        <div id="profile" class="screen">
+            <div class="profile-container">
+                <div class="profile-header">
+                    <div class="profile-avatar">WR</div>
+                    <div class="profile-name">Will Regelmann</div>
+                    <div class="profile-bio">Passionate collector of Pokemon cards, Star Wars figures, and vintage gaming memorabilia</div>
+                    
+                    <div class="profile-stats">
+                        <div class="profile-stat">
+                            <span class="profile-stat-number">247</span>
+                            <span class="profile-stat-label">Items</span>
+                        </div>
+                        <div class="profile-stat">
+                            <span class="profile-stat-number">12</span>
+                            <span class="profile-stat-label">Collections</span>
+                        </div>
+                        <div class="profile-stat">
+                            <span class="profile-stat-number">23</span>
+                            <span class="profile-stat-label">Trades</span>
+                        </div>
+                        <div class="profile-stat">
+                            <span class="profile-stat-number">4.8</span>
+                            <span class="profile-stat-label">Rating</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+                    <div style="background: white; padding: 25px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+                        <h3 style="margin-bottom: 15px; color: #2c3e50;">🏆 Achievements</h3>
+                        <div style="margin-bottom: 10px;">
+                            <span style="background: #ffd700; color: #333; padding: 5px 10px; border-radius: 15px; font-size: 0.9rem;">Pokemon Master</span>
+                        </div>
+                        <div style="margin-bottom: 10px;">
+                            <span style="background: #c0392b; color: white; padding: 5px 10px; border-radius: 15px; font-size: 0.9rem;">Sith Lord</span>
+                        </div>
+                        <div>
+                            <span style="background: #e74c3c; color: white; padding: 5px 10px; border-radius: 15px; font-size: 0.9rem;">Marvel Hero</span>
+                        </div>
+                    </div>
+
+                    <div style="background: white; padding: 25px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+                        <h3 style="margin-bottom: 15px; color: #2c3e50;">⚙️ Settings</h3>
+                        <div style="margin-bottom: 15px;">
+                            <label style="display: flex; align-items: center; gap: 10px;">
+                                <input type="checkbox" checked> Trade Notifications
+                            </label>
+                        </div>
+                        <div style="margin-bottom: 15px;">
+                            <label style="display: flex; align-items: center; gap: 10px;">
+                                <input type="checkbox" checked> Public Profile
+                            </label>
+                        </div>
+                        <div>
+                            <label style="display: flex; align-items: center; gap: 10px;">
+                                <input type="checkbox"> Dark Mode
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showScreen(screenId) {
+            // Hide all screens
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            
+            // Remove active class from all tabs
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected screen
+            document.getElementById(screenId).classList.add('active');
+            
+            // Activate selected tab
+            event.target.classList.add('active');
+        }
+
+        function openCollection(collectionName) {
+            alert(`Opening ${collectionName} collection! This would navigate to the detailed collection view in the React Native app.`);
+        }
+
+        // Animate progress bars when collections screen is shown
+        document.addEventListener('DOMContentLoaded', function() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const progressBars = entry.target.querySelectorAll('.progress-fill');
+                        progressBars.forEach(bar => {
+                            const width = bar.style.width;
+                            bar.style.width = '0%';
+                            setTimeout(() => {
+                                bar.style.width = width;
+                            }, 100);
+                        });
+                    }
+                });
+            });
+
+            const collectionsSection = document.getElementById('collections');
+            if (collectionsSection) {
+                observer.observe(collectionsSection);
+            }
+        });
+    </script>
+</body>
+</html>

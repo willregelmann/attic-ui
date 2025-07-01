@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Will's Attic - Collectibles Manager</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .hero {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 60px 40px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            margin-bottom: 40px;
+        }
+        
+        .logo {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .subtitle {
+            font-size: 1.8rem;
+            color: #666;
+            margin-bottom: 30px;
+            font-weight: 300;
+        }
+        
+        .description {
+            font-size: 1.2rem;
+            color: #555;
+            margin-bottom: 30px;
+            line-height: 1.8;
+        }
+        
+        .section {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .section-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .feature-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+            border-left: 4px solid #3498db;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .feature-card.implemented {
+            border-left-color: #27ae60;
+        }
+        
+        .feature-card.placeholder {
+            border-left-color: #f39c12;
+        }
+        
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            display: block;
+        }
+        
+        .feature-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .feature-desc {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+        
+        .feature-status {
+            font-size: 0.9rem;
+            font-weight: 600;
+            padding: 5px 15px;
+            border-radius: 20px;
+            display: inline-block;
+        }
+        
+        .status-implemented {
+            background: #d5f4e6;
+            color: #27ae60;
+        }
+        
+        .status-placeholder {
+            background: #fef5e7;
+            color: #f39c12;
+        }
+        
+        .auth-flow {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .auth-step {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 4px solid #3498db;
+        }
+        
+        .step-number {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin-right: 20px;
+            flex-shrink: 0;
+        }
+        
+        .step-content h4 {
+            color: #2c3e50;
+            margin-bottom: 5px;
+            font-size: 1.1rem;
+        }
+        
+        .step-content p {
+            color: #666;
+            margin: 0;
+        }
+        
+        .dashboard-demo {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+            display: block;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        
+        .collection-list {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+        }
+        
+        .collection-item {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border-left: 4px solid #27ae60;
+        }
+        
+        .collection-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+        
+        .collection-progress {
+            color: #27ae60;
+            font-weight: 500;
+        }
+        
+        .progress-bar {
+            background: #ecf0f1;
+            height: 8px;
+            border-radius: 4px;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #27ae60, #2ecc71);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+        
+        .tech-stack {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        
+        .tech-item {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            border-top: 3px solid #3498db;
+        }
+        
+        .tech-name {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+        
+        .tech-desc {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 40px 20px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+        
+        .footer a {
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .footer a:hover {
+            text-decoration: underline;
+        }
+        
+        @media (max-width: 768px) {
+            .logo {
+                font-size: 2.5rem;
+            }
+            
+            .hero {
+                padding: 40px 20px;
+            }
+            
+            .section {
+                padding: 20px;
+            }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Hero Section -->
+        <div class="hero">
+            <h1 class="logo">Will's Attic</h1>
+            <p class="subtitle">Collectibles Management Platform</p>
+            <p class="description">
+                A comprehensive React Native app with Laravel API backend for managing collectibles, 
+                featuring Google OAuth, real-time trading, and showcase galleries.
+            </p>
+        </div>
+
+        <!-- Implemented Features -->
+        <div class="section">
+            <h2 class="section-title">✅ Fully Implemented Features</h2>
+            <div class="features-grid">
+                <div class="feature-card implemented">
+                    <span class="feature-icon">🔐</span>
+                    <h3 class="feature-title">Google OAuth Authentication</h3>
+                    <p class="feature-desc">Complete OAuth flow with token management, user profiles, and persistent authentication</p>
+                    <span class="feature-status status-implemented">Production Ready</span>
+                </div>
+                
+                <div class="feature-card implemented">
+                    <span class="feature-icon">👤</span>
+                    <h3 class="feature-title">User Profile Setup</h3>
+                    <p class="feature-desc">Comprehensive profile creation with form validation, interests selection, and privacy settings</p>
+                    <span class="feature-status status-implemented">Production Ready</span>
+                </div>
+                
+                <div class="feature-card implemented">
+                    <span class="feature-icon">📱</span>
+                    <h3 class="feature-title">Collection Dashboard</h3>
+                    <p class="feature-desc">Rich dashboard with collection stats, progress tracking, and item management interface</p>
+                    <span class="feature-status status-implemented">Production Ready</span>
+                </div>
+                
+                <div class="feature-card implemented">
+                    <span class="feature-icon">🗂️</span>
+                    <h3 class="feature-title">Redux State Management</h3>
+                    <p class="feature-desc">Complete state architecture with auth, UI, cache, and notifications slices</p>
+                    <span class="feature-status status-implemented">Production Ready</span>
+                </div>
+                
+                <div class="feature-card implemented">
+                    <span class="feature-icon">🚀</span>
+                    <h3 class="feature-title">Navigation System</h3>
+                    <p class="feature-desc">React Navigation v6 with tab navigation, stack navigation, and parameter passing</p>
+                    <span class="feature-status status-implemented">Production Ready</span>
+                </div>
+                
+                <div class="feature-card implemented">
+                    <span class="feature-icon">🌐</span>
+                    <h3 class="feature-title">API Integration</h3>
+                    <p class="feature-desc">Laravel REST API with real authentication endpoints and data synchronization</p>
+                    <span class="feature-status status-implemented">Production Ready</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Authentication Flow -->
+        <div class="section">
+            <h2 class="section-title">🔐 Authentication Flow Implementation</h2>
+            <div class="auth-flow">
+                <div class="auth-step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h4>Welcome Screen</h4>
+                        <p>Gradient design with feature highlights, onboarding flow, and smooth navigation to authentication</p>
+                    </div>
+                </div>
+                
+                <div class="auth-step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h4>Google Sign-In Integration</h4>
+                        <p>Real Google OAuth using @react-native-google-signin with proper error handling and token exchange</p>
+                    </div>
+                </div>
+                
+                <div class="auth-step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h4>Profile Completion</h4>
+                        <p>Comprehensive form with validation, interests selection, privacy settings, and profile customization</p>
+                    </div>
+                </div>
+                
+                <div class="auth-step">
+                    <div class="step-number">4</div>
+                    <div class="step-content">
+                        <h4>Main Application</h4>
+                        <p>Tab-based navigation with Collection, Wishlist, Showcase, Trade, and Profile sections</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard Demo -->
+        <div class="section">
+            <h2 class="section-title">📊 Collection Dashboard (From Actual Implementation)</h2>
+            <div class="dashboard-demo">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <span class="stat-number">247</span>
+                        <span class="stat-label">Total Items</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-number">12</span>
+                        <span class="stat-label">Collections</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-number">$2,340</span>
+                        <span class="stat-label">Est. Value</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-number">89%</span>
+                        <span class="stat-label">Avg. Complete</span>
+                    </div>
+                </div>
+                
+                <div class="collection-list">
+                    <h4 style="margin-bottom: 20px; color: #2c3e50;">Your Collections:</h4>
+                    
+                    <div class="collection-item">
+                        <div class="collection-name">Pokemon Base Set</div>
+                        <div class="collection-progress">87% Complete (142/164 cards)</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 87%;"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="collection-item">
+                        <div class="collection-name">Star Wars Black Series</div>
+                        <div class="collection-progress">65% Complete (45/69 figures)</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 65%;"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="collection-item">
+                        <div class="collection-name">Marvel Legends</div>
+                        <div class="collection-progress">32% Complete (18/56 figures)</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 32%;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Placeholder Features -->
+        <div class="section">
+            <h2 class="section-title">🚧 Features In Development (Placeholder Screens)</h2>
+            <div class="features-grid">
+                <div class="feature-card placeholder">
+                    <span class="feature-icon">🏆</span>
+                    <h3 class="feature-title">Showcase Gallery</h3>
+                    <p class="feature-desc">Create and browse beautiful galleries of collectible showcases</p>
+                    <span class="feature-status status-placeholder">16 Screens Planned</span>
+                </div>
+                
+                <div class="feature-card placeholder">
+                    <span class="feature-icon">💰</span>
+                    <h3 class="feature-title">Trading Platform</h3>
+                    <p class="feature-desc">Match with other collectors and manage trade offers</p>
+                    <span class="feature-status status-placeholder">Wireframes Ready</span>
+                </div>
+                
+                <div class="feature-card placeholder">
+                    <span class="feature-icon">📈</span>
+                    <h3 class="feature-title">Analytics Dashboard</h3>
+                    <p class="feature-desc">Track collection value and growth over time</p>
+                    <span class="feature-status status-placeholder">UI Designed</span>
+                </div>
+                
+                <div class="feature-card placeholder">
+                    <span class="feature-icon">⚙️</span>
+                    <h3 class="feature-title">Settings & Preferences</h3>
+                    <p class="feature-desc">Customize app behavior and privacy settings</p>
+                    <span class="feature-status status-placeholder">Framework Ready</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Technology Stack -->
+        <div class="section">
+            <h2 class="section-title">🛠️ Technology Stack</h2>
+            <div class="tech-stack">
+                <div class="tech-grid">
+                    <div class="tech-item">
+                        <div class="tech-name">React Native 0.72</div>
+                        <div class="tech-desc">Cross-platform mobile development</div>
+                    </div>
+                    <div class="tech-item">
+                        <div class="tech-name">Laravel 12</div>
+                        <div class="tech-desc">PHP API backend with Sanctum auth</div>
+                    </div>
+                    <div class="tech-item">
+                        <div class="tech-name">Redux Toolkit</div>
+                        <div class="tech-desc">Modern state management</div>
+                    </div>
+                    <div class="tech-item">
+                        <div class="tech-name">React Navigation 6</div>
+                        <div class="tech-desc">Tab and stack navigation</div>
+                    </div>
+                    <div class="tech-item">
+                        <div class="tech-name">Google OAuth</div>
+                        <div class="tech-desc">Secure authentication system</div>
+                    </div>
+                    <div class="tech-item">
+                        <div class="tech-name">Vercel Deployment</div>
+                        <div class="tech-desc">Serverless hosting platform</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p>This web version demonstrates the features implemented in the React Native mobile app.</p>
+            <p>Full functionality available on <a href="https://github.com/willregelmann">GitHub</a> • Ready for iOS and Android deployment</p>
+        </div>
+    </div>
+</body>
+</html>
