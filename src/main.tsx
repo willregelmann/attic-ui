@@ -1,6 +1,6 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
-import { Search, Grid3X3, List, Clock, DollarSign, ArrowLeft, Star, Eye, Heart, Filter, Package } from 'lucide-react';
+import { Search, Grid3X3, List, Clock, DollarSign, ArrowLeft, Star, Eye, Heart, Filter, Package, Moon, Sun } from 'lucide-react';
 
 import './globals.css';
 import { Button } from './components/ui/button';
@@ -43,6 +43,34 @@ const WillsAtticApp: React.FC = () => {
   const [user, setUser] = React.useState<User | null>(null);
   const [authToken, setAuthToken] = React.useState<string | null>(null);
   const [isLoading, setIsLoading] = React.useState(false);
+
+  // Dark mode state
+  const [isDarkMode, setIsDarkMode] = React.useState(() => {
+    // Check localStorage and system preference
+    const saved = localStorage.getItem('darkMode');
+    if (saved !== null) {
+      return JSON.parse(saved);
+    }
+    return window.matchMedia('(prefers-color-scheme: dark)').matches;
+  });
+
+  // Dark mode toggle function
+  const toggleDarkMode = () => {
+    setIsDarkMode(prev => {
+      const newMode = !prev;
+      localStorage.setItem('darkMode', JSON.stringify(newMode));
+      return newMode;
+    });
+  };
+
+  // Apply dark mode class to document
+  React.useEffect(() => {
+    if (isDarkMode) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [isDarkMode]);
 
   // Function to toggle starring a collection
   const toggleStar = (collectionId: number) => {
@@ -320,49 +348,49 @@ const WillsAtticApp: React.FC = () => {
 
         {/* Progress Overview */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <Card className="bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200">
+          <Card className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 border-blue-200 dark:border-blue-800">
             <CardContent className="pt-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-blue-600">Total Collections</p>
-                  <div className="text-3xl font-bold text-blue-900">{totalCollections}</div>
+                  <p className="text-sm font-medium text-blue-600 dark:text-blue-400">Total Collections</p>
+                  <div className="text-3xl font-bold text-blue-900 dark:text-blue-100">{totalCollections}</div>
                 </div>
                 <div className="text-3xl">📚</div>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="bg-gradient-to-br from-green-50 to-green-100 border-green-200">
+          <Card className="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/20 border-green-200 dark:border-green-800">
             <CardContent className="pt-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-green-600">Items Owned</p>
-                  <div className="text-3xl font-bold text-green-900">{totalOwnedItems}</div>
-                  <p className="text-xs text-green-600">of {totalPossibleItems}</p>
+                  <p className="text-sm font-medium text-green-600 dark:text-green-400">Items Owned</p>
+                  <div className="text-3xl font-bold text-green-900 dark:text-green-100">{totalOwnedItems}</div>
+                  <p className="text-xs text-green-600 dark:text-green-400">of {totalPossibleItems}</p>
                 </div>
                 <div className="text-3xl">📦</div>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="bg-gradient-to-br from-purple-50 to-purple-100 border-purple-200">
+          <Card className="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20 border-purple-200 dark:border-purple-800">
             <CardContent className="pt-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-purple-600">Avg. Completion</p>
-                  <div className="text-3xl font-bold text-purple-900">{avgCompletion}%</div>
+                  <p className="text-sm font-medium text-purple-600 dark:text-purple-400">Avg. Completion</p>
+                  <div className="text-3xl font-bold text-purple-900 dark:text-purple-100">{avgCompletion}%</div>
                 </div>
                 <div className="text-3xl">🎯</div>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="bg-gradient-to-br from-yellow-50 to-yellow-100 border-yellow-200">
+          <Card className="bg-gradient-to-br from-yellow-50 to-yellow-100 dark:from-yellow-900/20 dark:to-yellow-800/20 border-yellow-200 dark:border-yellow-800">
             <CardContent className="pt-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-yellow-600">Total Value</p>
-                  <div className="text-3xl font-bold text-yellow-900">{formatCurrency(totalValue)}</div>
+                  <p className="text-sm font-medium text-yellow-600 dark:text-yellow-400">Total Value</p>
+                  <div className="text-3xl font-bold text-yellow-900 dark:text-yellow-100">{formatCurrency(totalValue)}</div>
                 </div>
                 <div className="text-3xl">💰</div>
               </div>
@@ -1856,8 +1884,20 @@ const WillsAtticApp: React.FC = () => {
                 </Button>
               </div>
               
-              {isAuthenticated && user ? (
-                <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2">
+                {/* Dark Mode Toggle */}
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={toggleDarkMode}
+                  className="text-white hover:text-white hover:bg-white/20"
+                  title={isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}
+                >
+                  {isDarkMode ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+                </Button>
+                
+                {isAuthenticated && user ? (
+                  <div className="flex items-center gap-3">
                   <img 
                     src={user.google_avatar} 
                     alt="Profile" 
@@ -1874,17 +1914,18 @@ const WillsAtticApp: React.FC = () => {
                   >
                     Sign Out
                   </Button>
-                </div>
-              ) : (
-                <Button
-                  variant={currentScreen === 'auth' ? 'secondary' : 'ghost'}
-                  size="sm"
-                  onClick={() => setCurrentScreen('auth')}
-                  className="text-white hover:text-white"
-                >
-                  🔐 Sign In
-                </Button>
-              )}
+                  </div>
+                ) : (
+                  <Button
+                    variant={currentScreen === 'auth' ? 'secondary' : 'ghost'}
+                    size="sm"
+                    onClick={() => setCurrentScreen('auth')}
+                    className="text-white hover:text-white"
+                  >
+                    🔐 Sign In
+                  </Button>
+                )}
+              </div>
             </nav>
           </div>
         </div>
