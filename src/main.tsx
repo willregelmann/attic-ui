@@ -1,6 +1,6 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
-import { Search, Grid3X3, List, Clock, DollarSign, ArrowLeft, Star, Eye, Heart, Filter, Package, Moon, Sun } from 'lucide-react';
+import { Search, Grid3X3, List, Clock, ArrowLeft, Star, Eye, Heart, Filter, Package, Moon, Sun } from 'lucide-react';
 
 import './globals.css';
 import { Button } from './components/ui/button';
@@ -9,7 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './com
 import { Badge } from './components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './components/ui/select';
 import { Progress } from './components/ui/progress';
-import { cn, formatCurrency, formatPercentage } from './lib/utils';
+import { cn, formatPercentage } from './lib/utils';
 
 // Simple React app that works with normal React (not React Native Web)
 // Google OAuth types
@@ -260,7 +260,6 @@ const WillsAtticApp: React.FC = () => {
       completion: 87,
       totalItems: 164,
       ownedItems: 142,
-      estimatedValue: 1250,
       recentActivity: '2 items added this week',
       rarity: 'legendary' as const,
       year: 1998,
@@ -272,7 +271,6 @@ const WillsAtticApp: React.FC = () => {
       completion: 65,
       totalItems: 69,
       ownedItems: 45,
-      estimatedValue: 890,
       recentActivity: '1 item added this month',
       rarity: 'epic' as const,
       year: 2013,
@@ -284,7 +282,6 @@ const WillsAtticApp: React.FC = () => {
       completion: 32,
       totalItems: 56,
       ownedItems: 18,
-      estimatedValue: 320,
       recentActivity: 'No recent activity',
       rarity: 'rare' as const,
       year: 2002,
@@ -296,7 +293,6 @@ const WillsAtticApp: React.FC = () => {
       completion: 78,
       totalItems: 120,
       ownedItems: 94,
-      estimatedValue: 450,
       recentActivity: '5 items added this week',
       rarity: 'common' as const,
       year: 2010,
@@ -308,7 +304,6 @@ const WillsAtticApp: React.FC = () => {
       completion: 15,
       totalItems: 295,
       ownedItems: 44,
-      estimatedValue: 2100,
       recentActivity: '1 item added last month',
       rarity: 'legendary' as const,
       year: 1993,
@@ -320,7 +315,6 @@ const WillsAtticApp: React.FC = () => {
       completion: 55,
       totalItems: 85,
       ownedItems: 47,
-      estimatedValue: 680,
       recentActivity: '3 items added this month',
       rarity: 'epic' as const,
       year: 2020,
@@ -330,7 +324,6 @@ const WillsAtticApp: React.FC = () => {
   const HomeScreen = () => {
     const starred = allCollections.filter(collection => starredCollections.includes(collection.id));
     const totalCollections = allCollections.length;
-    const totalValue = allCollections.reduce((sum, col) => sum + col.estimatedValue, 0);
     const avgCompletion = Math.round(allCollections.reduce((sum, col) => sum + col.completion, 0) / totalCollections);
     const totalOwnedItems = allCollections.reduce((sum, col) => sum + col.ownedItems, 0);
     const totalPossibleItems = allCollections.reduce((sum, col) => sum + col.totalItems, 0);
@@ -347,7 +340,7 @@ const WillsAtticApp: React.FC = () => {
         </div>
 
         {/* Progress Overview */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
           <Card className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 border-blue-200 dark:border-blue-800">
             <CardContent className="pt-6">
               <div className="flex items-center justify-between">
@@ -381,18 +374,6 @@ const WillsAtticApp: React.FC = () => {
                   <div className="text-3xl font-bold text-purple-900 dark:text-purple-100">{avgCompletion}%</div>
                 </div>
                 <div className="text-3xl">🎯</div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-gradient-to-br from-yellow-50 to-yellow-100 dark:from-yellow-900/20 dark:to-yellow-800/20 border-yellow-200 dark:border-yellow-800">
-            <CardContent className="pt-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-yellow-600 dark:text-yellow-400">Total Value</p>
-                  <div className="text-3xl font-bold text-yellow-900 dark:text-yellow-100">{formatCurrency(totalValue)}</div>
-                </div>
-                <div className="text-3xl">💰</div>
               </div>
             </CardContent>
           </Card>
@@ -476,12 +457,6 @@ const WillsAtticApp: React.FC = () => {
                     </div>
                     
                     <div className="flex items-center justify-between text-sm">
-                      <div className="flex items-center gap-1">
-                        <DollarSign className="h-3 w-3" />
-                        <span className="font-medium text-foreground">
-                          {formatCurrency(collection.estimatedValue)}
-                        </span>
-                      </div>
                       <div className="flex items-center gap-1 text-muted-foreground">
                         <Clock className="h-3 w-3" />
                         <span>{collection.recentActivity}</span>
@@ -689,12 +664,6 @@ const WillsAtticApp: React.FC = () => {
                 
                 <div className="flex items-center justify-between text-sm text-muted-foreground">
                   <div className="flex items-center gap-1">
-                    <DollarSign className="h-3 w-3" />
-                    <span className="font-medium text-foreground">
-                      {formatCurrency(collection.estimatedValue)}
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-1">
                     <Clock className="h-3 w-3" />
                     <span>{collection.recentActivity}</span>
                   </div>
@@ -740,7 +709,6 @@ const WillsAtticApp: React.FC = () => {
             rarity: 'legendary' as const,
             condition: 'Near Mint',
             owned: true,
-            estimatedValue: 350,
             imageUrl: 'https://images.pokemontcg.io/base1/4_hires.png',
             type: 'Fire',
             description: 'A Fire-type Pokémon. Charizard is the evolved form of Charmeleon.',
@@ -754,7 +722,6 @@ const WillsAtticApp: React.FC = () => {
             rarity: 'legendary' as const,
             condition: 'Lightly Played',
             owned: true,
-            estimatedValue: 280,
             imageUrl: 'https://images.pokemontcg.io/base1/2_hires.png',
             type: 'Water',
             description: 'A Water-type Pokémon. Blastoise is the evolved form of Wartortle.',
@@ -768,7 +735,6 @@ const WillsAtticApp: React.FC = () => {
             rarity: 'legendary' as const,
             condition: 'Not Owned',
             owned: false,
-            estimatedValue: 220,
             type: 'Grass',
             description: 'A Grass-type Pokémon. Venusaur is the evolved form of Ivysaur.',
             lastUpdated: null,
@@ -781,7 +747,6 @@ const WillsAtticApp: React.FC = () => {
             rarity: 'rare' as const,
             condition: 'Mint',
             owned: true,
-            estimatedValue: 180,
             type: 'Electric',
             description: 'An Electric-type Pokémon. The most famous Pokémon.',
             lastUpdated: '3 days ago',
@@ -794,7 +759,6 @@ const WillsAtticApp: React.FC = () => {
             rarity: 'epic' as const,
             condition: 'Near Mint',
             owned: true,
-            estimatedValue: 85,
             type: 'Psychic',
             description: 'A Psychic-type Pokémon with incredible mental powers.',
             lastUpdated: '5 days ago',
@@ -807,7 +771,6 @@ const WillsAtticApp: React.FC = () => {
             rarity: 'epic' as const,
             condition: 'Not Owned',
             owned: false,
-            estimatedValue: 65,
             type: 'Fighting',
             description: 'A Fighting-type Pokémon known for its incredible strength.',
             lastUpdated: null,
@@ -822,7 +785,6 @@ const WillsAtticApp: React.FC = () => {
             rarity: 'legendary' as const,
             condition: 'Mint',
             owned: true,
-            estimatedValue: 45,
             type: 'Sith Lord',
             description: 'The Dark Lord of the Sith in his iconic black armor.',
             lastUpdated: '1 day ago',
@@ -835,7 +797,6 @@ const WillsAtticApp: React.FC = () => {
             rarity: 'legendary' as const,
             condition: 'Near Mint',
             owned: true,
-            estimatedValue: 38,
             type: 'Jedi',
             description: 'Young Jedi Knight in his Return of the Jedi outfit.',
             lastUpdated: '4 days ago',
@@ -848,7 +809,6 @@ const WillsAtticApp: React.FC = () => {
             rarity: 'epic' as const,
             condition: 'Not Owned',
             owned: false,
-            estimatedValue: 55,
             type: 'Bounty Hunter',
             description: 'The galaxy\'s most feared bounty hunter.',
             lastUpdated: null,
@@ -877,9 +837,6 @@ const WillsAtticApp: React.FC = () => {
     });
 
     const ownedCount = allItems.filter(item => item.owned).length;
-    const totalValue = allItems
-      .filter(item => item.owned)
-      .reduce((sum, item) => sum + item.estimatedValue, 0);
 
     return (
       <div className="container mx-auto px-4 py-8 max-w-7xl">
@@ -919,18 +876,6 @@ const WillsAtticApp: React.FC = () => {
             <CardContent className="pt-6">
               <div className="text-2xl font-bold">{formatPercentage(selectedCollection.completion)}</div>
               <p className="text-sm text-muted-foreground">Complete</p>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="pt-6">
-              <div className="text-2xl font-bold">{formatCurrency(totalValue)}</div>
-              <p className="text-sm text-muted-foreground">Collection Value</p>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="pt-6">
-              <div className="text-2xl font-bold">{formatCurrency(selectedCollection.estimatedValue)}</div>
-              <p className="text-sm text-muted-foreground">Total Potential</p>
             </CardContent>
           </Card>
         </div>
@@ -1069,7 +1014,6 @@ const WillsAtticApp: React.FC = () => {
                     </span>
                   </div>
                   <div className="text-right">
-                    <div className="font-semibold">{formatCurrency(item.estimatedValue)}</div>
                     {item.owned && item.lastUpdated && (
                       <div className="text-xs text-muted-foreground">
                         Updated {item.lastUpdated}
@@ -1128,7 +1072,6 @@ const WillsAtticApp: React.FC = () => {
             rarity: 'legendary' as const,
             condition: 'Near Mint',
             owned: true,
-            estimatedValue: 350,
             imageUrl: 'https://images.pokemontcg.io/base1/4_hires.png',
             type: 'Fire',
             description: 'A Fire-type Pokémon. Charizard is the evolved form of Charmeleon.',
@@ -1142,7 +1085,6 @@ const WillsAtticApp: React.FC = () => {
             rarity: 'legendary' as const,
             condition: 'Lightly Played',
             owned: true,
-            estimatedValue: 280,
             imageUrl: 'https://images.pokemontcg.io/base1/2_hires.png',
             type: 'Water',
             description: 'A Water-type Pokémon. Blastoise is the evolved form of Wartortle.',
@@ -1156,7 +1098,6 @@ const WillsAtticApp: React.FC = () => {
             rarity: 'legendary' as const,
             condition: 'Not Owned',
             owned: false,
-            estimatedValue: 220,
             type: 'Grass',
             description: 'A Grass-type Pokémon. Venusaur is the evolved form of Ivysaur.',
             lastUpdated: null,
@@ -1171,7 +1112,6 @@ const WillsAtticApp: React.FC = () => {
             rarity: 'legendary' as const,
             condition: 'Mint',
             owned: true,
-            estimatedValue: 45,
             type: 'Sith Lord',
             description: 'The Dark Lord of the Sith in his iconic black armor.',
             lastUpdated: '1 day ago',
@@ -1184,7 +1124,6 @@ const WillsAtticApp: React.FC = () => {
             rarity: 'legendary' as const,
             condition: 'Near Mint',
             owned: true,
-            estimatedValue: 38,
             type: 'Jedi',
             description: 'Young Jedi Knight in his Return of the Jedi outfit.',
             lastUpdated: '4 days ago',
@@ -1273,7 +1212,7 @@ const WillsAtticApp: React.FC = () => {
                   </CardHeader>
                   <CardContent>
                     <p className="text-sm text-muted-foreground">
-                      {collection.ownedItems}/{collection.totalItems} items • {formatCurrency(collection.estimatedValue)}
+                      {collection.ownedItems}/{collection.totalItems} items
                     </p>
                   </CardContent>
                 </Card>
@@ -1370,7 +1309,6 @@ const WillsAtticApp: React.FC = () => {
                           {item.condition}
                         </span>
                       </div>
-                      <div className="font-semibold">{formatCurrency(item.estimatedValue)}</div>
                     </div>
                     <div className="flex gap-2 pt-2">
                       <Button
@@ -1413,7 +1351,6 @@ const WillsAtticApp: React.FC = () => {
       rarity: item?.rarity || 'common',
       condition: item?.condition || 'Mint',
       owned: item?.owned ?? true,
-      estimatedValue: item?.estimatedValue || 0,
     });
 
     const [selectedFile, setSelectedFile] = React.useState<File | null>(null);
@@ -1615,17 +1552,6 @@ const WillsAtticApp: React.FC = () => {
                     <SelectItem value="Not Owned">Not Owned</SelectItem>
                   </SelectContent>
                 </Select>
-              </div>
-              <div>
-                <label className="text-sm font-medium mb-2 block">Estimated Value ($)</label>
-                <Input
-                  type="number"
-                  value={formData.estimatedValue}
-                  onChange={(e) => setFormData(prev => ({ ...prev, estimatedValue: parseFloat(e.target.value) || 0 }))}
-                  placeholder="0"
-                  min="0"
-                  step="0.01"
-                />
               </div>
               <div className="flex items-center space-x-2">
                 <input
