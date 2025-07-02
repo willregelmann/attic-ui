@@ -1,4 +1,4 @@
-import{g as D}from"./index-B-BqBWyg.js";function de(){if(typeof navigator<"u"&&navigator.product==="ReactNative")return!0;if(typeof process<"u"){const e=process.type;return e==="renderer"||e==="worker"?!1:!!(process.versions&&process.versions.node)}return!1}const pe={toWeb(){throw new Error("Vercel Blob: Sorry, we cannot get a Readable stream in this environment. If you see this message please open an issue here: https://github.com/vercel/storage/ with details on your environment.")}};/*!
+import{g as D}from"./index-jwy8bgp8.js";function de(){if(typeof navigator<"u"&&navigator.product==="ReactNative")return!0;if(typeof process<"u"){const e=process.type;return e==="renderer"||e==="worker"?!1:!!(process.versions&&process.versions.node)}return!1}const pe={toWeb(){throw new Error("Vercel Blob: Sorry, we cannot get a Readable stream in this environment. If you see this message please open an issue here: https://github.com/vercel/storage/ with details on your environment.")}};/*!
  * Determine if an object is a Buffer
  *
  * @author   Feross Aboukhadijeh <https://feross.org>
@@ -9,4 +9,4 @@ import{g as D}from"./index-B-BqBWyg.js";function de(){if(typeof navigator<"u"&&n
  * Copyright(c) 2015 Jed Watson
  * MIT Licensed
  */async function mt(e,t){await U("/delete",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({urls:Array.isArray(e)?e:[e]}),signal:t==null?void 0:t.abortSignal},t)}var bt=pt({allowedOptions:["cacheControlMaxAge","addRandomSuffix","allowOverwrite","contentType"]});export{Fe as BlobAccessError,Ge as BlobClientTokenExpiredError,Xe as BlobContentTypeNotAllowedError,h as BlobError,We as BlobFileTooLargeError,je as BlobNotFoundError,ze as BlobPathnameMismatchError,Ze as BlobRequestAbortedError,M as BlobServiceNotAvailable,Ke as BlobServiceRateLimited,Je as BlobStoreNotFoundError,Ye as BlobStoreSuspendedError,le as BlobUnknownError,mt as del,bt as put};
-//# sourceMappingURL=index-flHiu0AO.js.map
+//# sourceMappingURL=index-CeEhCpg_.js.map

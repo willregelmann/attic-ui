@@ -698,21 +698,19 @@ const WillsAtticApp: React.FC = () => {
       return <div>No collection selected</div>;
     }
 
-    // Mock items data for the selected collection
-    const getCollectionItems = (collectionId: number) => {
-      const baseItems = {
+    // Mock collectibles data (catalog of all items that exist)
+    const getAllCollectibles = (collectionId: number) => {
+      const collectibles = {
         1: [ // Pokemon Base Set
           {
             id: 1,
             name: 'Charizard',
             number: '#004',
             rarity: 'legendary' as const,
-            condition: 'Near Mint',
-            owned: true,
-            imageUrl: 'https://images.pokemontcg.io/base1/4_hires.png',
             type: 'Fire',
             description: 'A Fire-type Pokémon. Charizard is the evolved form of Charmeleon.',
-            lastUpdated: '2 days ago',
+            imageUrl: 'https://images.pokemontcg.io/base1/4_hires.png',
+            collectionId: 1,
             wishlistCount: 1247,
           },
           {
@@ -720,12 +718,10 @@ const WillsAtticApp: React.FC = () => {
             name: 'Blastoise',
             number: '#009',
             rarity: 'legendary' as const,
-            condition: 'Lightly Played',
-            owned: true,
-            imageUrl: 'https://images.pokemontcg.io/base1/2_hires.png',
             type: 'Water',
             description: 'A Water-type Pokémon. Blastoise is the evolved form of Wartortle.',
-            lastUpdated: '1 week ago',
+            imageUrl: 'https://images.pokemontcg.io/base1/2_hires.png',
+            collectionId: 1,
             wishlistCount: 892,
           },
           {
@@ -733,11 +729,9 @@ const WillsAtticApp: React.FC = () => {
             name: 'Venusaur',
             number: '#015',
             rarity: 'legendary' as const,
-            condition: 'Not Owned',
-            owned: false,
             type: 'Grass',
             description: 'A Grass-type Pokémon. Venusaur is the evolved form of Ivysaur.',
-            lastUpdated: null,
+            collectionId: 1,
             wishlistCount: 743,
           },
           {
@@ -745,11 +739,9 @@ const WillsAtticApp: React.FC = () => {
             name: 'Pikachu',
             number: '#025',
             rarity: 'rare' as const,
-            condition: 'Mint',
-            owned: true,
             type: 'Electric',
             description: 'An Electric-type Pokémon. The most famous Pokémon.',
-            lastUpdated: '3 days ago',
+            collectionId: 1,
             wishlistCount: 2156,
           },
           {
@@ -757,11 +749,9 @@ const WillsAtticApp: React.FC = () => {
             name: 'Alakazam',
             number: '#065',
             rarity: 'epic' as const,
-            condition: 'Near Mint',
-            owned: true,
             type: 'Psychic',
             description: 'A Psychic-type Pokémon with incredible mental powers.',
-            lastUpdated: '5 days ago',
+            collectionId: 1,
             wishlistCount: 456,
           },
           {
@@ -769,55 +759,143 @@ const WillsAtticApp: React.FC = () => {
             name: 'Machamp',
             number: '#068',
             rarity: 'epic' as const,
-            condition: 'Not Owned',
-            owned: false,
             type: 'Fighting',
             description: 'A Fighting-type Pokémon known for its incredible strength.',
-            lastUpdated: null,
+            collectionId: 1,
             wishlistCount: 334,
           },
         ],
         2: [ // Star Wars Black Series
           {
-            id: 1,
+            id: 7,
             name: 'Darth Vader',
             number: '#02',
-            rarity: 'legendary' as const,
-            condition: 'Mint',
-            owned: true,
+            rarity: 'epic' as const,
             type: 'Sith Lord',
             description: 'The Dark Lord of the Sith in his iconic black armor.',
-            lastUpdated: '1 day ago',
+            collectionId: 2,
             wishlistCount: 1823,
           },
           {
-            id: 2,
+            id: 8,
             name: 'Luke Skywalker',
             number: '#01',
             rarity: 'legendary' as const,
-            condition: 'Near Mint',
-            owned: true,
             type: 'Jedi',
             description: 'Young Jedi Knight in his Return of the Jedi outfit.',
-            lastUpdated: '4 days ago',
+            collectionId: 2,
             wishlistCount: 1456,
           },
           {
-            id: 3,
+            id: 9,
             name: 'Boba Fett',
             number: '#06',
             rarity: 'epic' as const,
-            condition: 'Not Owned',
-            owned: false,
             type: 'Bounty Hunter',
             description: 'The galaxy\'s most feared bounty hunter.',
-            lastUpdated: null,
+            collectionId: 2,
             wishlistCount: 998,
           },
         ],
       };
       
-      return baseItems[collectionId as keyof typeof baseItems] || [];
+      return collectibles[collectionId as keyof typeof collectibles] || [];
+    };
+
+    // Mock user items data (user's owned copies)
+    const getUserItems = (userId: string, collectionId: number) => {
+      const userItems = {
+        'user123': {
+          1: [ // Pokemon Base Set
+            {
+              id: 101,
+              collectibleId: 1, // Charizard
+              userId: 'user123',
+              condition: 'Near Mint',
+              acquiredDate: '2024-01-15',
+              notes: 'Amazing card from my childhood collection',
+              customImageUrl: null,
+              lastUpdated: '2 days ago',
+            },
+            {
+              id: 102,
+              collectibleId: 2, // Blastoise
+              userId: 'user123',
+              condition: 'Lightly Played',
+              acquiredDate: '2024-01-20',
+              notes: 'Got this at a local card shop',
+              customImageUrl: null,
+              lastUpdated: '1 week ago',
+            },
+            {
+              id: 103,
+              collectibleId: 4, // Pikachu
+              userId: 'user123',
+              condition: 'Mint',
+              acquiredDate: '2024-02-01',
+              notes: 'Perfect condition!',
+              customImageUrl: null,
+              lastUpdated: '3 days ago',
+            },
+            {
+              id: 104,
+              collectibleId: 5, // Alakazam
+              userId: 'user123',
+              condition: 'Near Mint',
+              acquiredDate: '2024-01-30',
+              notes: '',
+              customImageUrl: null,
+              lastUpdated: '5 days ago',
+            },
+          ],
+          2: [ // Star Wars Black Series
+            {
+              id: 105,
+              collectibleId: 7, // Darth Vader
+              userId: 'user123',
+              condition: 'Mint',
+              acquiredDate: '2024-02-05',
+              notes: 'Still in original packaging',
+              customImageUrl: null,
+              lastUpdated: '1 day ago',
+            },
+            {
+              id: 106,
+              collectibleId: 8, // Luke Skywalker
+              userId: 'user123',
+              condition: 'Near Mint',
+              acquiredDate: '2024-01-25',
+              notes: 'Great figure from the series',
+              customImageUrl: null,
+              lastUpdated: '4 days ago',
+            },
+          ],
+        }
+      };
+      
+      return userItems[userId as keyof typeof userItems]?.[collectionId] || [];
+    };
+
+    // Function to combine collectibles with user ownership data
+    const getCollectionItems = (collectionId: number, userId: string = 'user123') => {
+      const collectibles = getAllCollectibles(collectionId);
+      const userItems = getUserItems(userId, collectionId);
+      
+      // Map collectibles to include user ownership data
+      return collectibles.map(collectible => {
+        const userItem = userItems.find(item => item.collectibleId === collectible.id);
+        
+        return {
+          ...collectible,
+          // User-specific data
+          owned: !!userItem,
+          userItem: userItem || null,
+          condition: userItem?.condition || 'Not Owned',
+          lastUpdated: userItem?.lastUpdated || null,
+          notes: userItem?.notes || '',
+          customImageUrl: userItem?.customImageUrl || null,
+        };
+      });
     };
 
     const allItems = getCollectionItems(selectedCollection.id);
@@ -1053,29 +1131,19 @@ const WillsAtticApp: React.FC = () => {
     const [showItemForm, setShowItemForm] = React.useState(false);
     const [items, setItems] = React.useState<any[]>([]);
 
-    // Initialize items for selected collection
-    React.useEffect(() => {
-      if (selectedCollectionId) {
-        const collectionItems = getCollectionItems(selectedCollectionId);
-        setItems(collectionItems);
-      }
-    }, [selectedCollectionId]);
-
-    // Get collection items (using same function as CollectionDetailScreen)
-    const getCollectionItems = (collectionId: number) => {
-      const baseItems = {
+    // Helper functions for data access
+    const getAllCollectibles = (collectionId: number) => {
+      const collectibles = {
         1: [ // Pokemon Base Set
           {
             id: 1,
             name: 'Charizard',
             number: '#004',
             rarity: 'legendary' as const,
-            condition: 'Near Mint',
-            owned: true,
-            imageUrl: 'https://images.pokemontcg.io/base1/4_hires.png',
             type: 'Fire',
             description: 'A Fire-type Pokémon. Charizard is the evolved form of Charmeleon.',
-            lastUpdated: '2 days ago',
+            imageUrl: 'https://images.pokemontcg.io/base1/4_hires.png',
+            collectionId: 1,
             wishlistCount: 1247,
           },
           {
@@ -1083,12 +1151,10 @@ const WillsAtticApp: React.FC = () => {
             name: 'Blastoise',
             number: '#009',
             rarity: 'legendary' as const,
-            condition: 'Lightly Played',
-            owned: true,
-            imageUrl: 'https://images.pokemontcg.io/base1/2_hires.png',
             type: 'Water',
             description: 'A Water-type Pokémon. Blastoise is the evolved form of Wartortle.',
-            lastUpdated: '1 week ago',
+            imageUrl: 'https://images.pokemontcg.io/base1/2_hires.png',
+            collectionId: 1,
             wishlistCount: 892,
           },
           {
@@ -1096,44 +1162,178 @@ const WillsAtticApp: React.FC = () => {
             name: 'Venusaur',
             number: '#015',
             rarity: 'legendary' as const,
-            condition: 'Not Owned',
-            owned: false,
             type: 'Grass',
             description: 'A Grass-type Pokémon. Venusaur is the evolved form of Ivysaur.',
-            lastUpdated: null,
+            collectionId: 1,
             wishlistCount: 743,
+          },
+          {
+            id: 4,
+            name: 'Pikachu',
+            number: '#025',
+            rarity: 'rare' as const,
+            type: 'Electric',
+            description: 'An Electric-type Pokémon. The most famous Pokémon.',
+            collectionId: 1,
+            wishlistCount: 2156,
+          },
+          {
+            id: 5,
+            name: 'Alakazam',
+            number: '#065',
+            rarity: 'epic' as const,
+            type: 'Psychic',
+            description: 'A Psychic-type Pokémon with incredible mental powers.',
+            collectionId: 1,
+            wishlistCount: 456,
+          },
+          {
+            id: 6,
+            name: 'Machamp',
+            number: '#068',
+            rarity: 'epic' as const,
+            type: 'Fighting',
+            description: 'A Fighting-type Pokémon known for its incredible strength.',
+            collectionId: 1,
+            wishlistCount: 334,
           },
         ],
         2: [ // Star Wars Black Series
           {
-            id: 1,
+            id: 7,
             name: 'Darth Vader',
             number: '#02',
-            rarity: 'legendary' as const,
-            condition: 'Mint',
-            owned: true,
+            rarity: 'epic' as const,
             type: 'Sith Lord',
             description: 'The Dark Lord of the Sith in his iconic black armor.',
-            lastUpdated: '1 day ago',
+            collectionId: 2,
             wishlistCount: 1823,
           },
           {
-            id: 2,
+            id: 8,
             name: 'Luke Skywalker',
             number: '#01',
             rarity: 'legendary' as const,
-            condition: 'Near Mint',
-            owned: true,
             type: 'Jedi',
             description: 'Young Jedi Knight in his Return of the Jedi outfit.',
-            lastUpdated: '4 days ago',
+            collectionId: 2,
             wishlistCount: 1456,
+          },
+          {
+            id: 9,
+            name: 'Boba Fett',
+            number: '#06',
+            rarity: 'epic' as const,
+            type: 'Bounty Hunter',
+            description: 'The galaxy\'s most feared bounty hunter.',
+            collectionId: 2,
+            wishlistCount: 998,
           },
         ],
       };
       
-      return baseItems[collectionId as keyof typeof baseItems] || [];
+      return collectibles[collectionId as keyof typeof collectibles] || [];
     };
+
+    const getUserItems = (userId: string, collectionId: number) => {
+      const userItems = {
+        'user123': {
+          1: [ // Pokemon Base Set
+            {
+              id: 101,
+              collectibleId: 1, // Charizard
+              userId: 'user123',
+              condition: 'Near Mint',
+              acquiredDate: '2024-01-15',
+              notes: 'Amazing card from my childhood collection',
+              customImageUrl: null,
+              lastUpdated: '2 days ago',
+            },
+            {
+              id: 102,
+              collectibleId: 2, // Blastoise
+              userId: 'user123',
+              condition: 'Lightly Played',
+              acquiredDate: '2024-01-20',
+              notes: 'Got this at a local card shop',
+              customImageUrl: null,
+              lastUpdated: '1 week ago',
+            },
+            {
+              id: 103,
+              collectibleId: 4, // Pikachu
+              userId: 'user123',
+              condition: 'Mint',
+              acquiredDate: '2024-02-01',
+              notes: 'Perfect condition!',
+              customImageUrl: null,
+              lastUpdated: '3 days ago',
+            },
+            {
+              id: 104,
+              collectibleId: 5, // Alakazam
+              userId: 'user123',
+              condition: 'Near Mint',
+              acquiredDate: '2024-01-30',
+              notes: '',
+              customImageUrl: null,
+              lastUpdated: '5 days ago',
+            },
+          ],
+          2: [ // Star Wars Black Series
+            {
+              id: 105,
+              collectibleId: 7, // Darth Vader
+              userId: 'user123',
+              condition: 'Mint',
+              acquiredDate: '2024-02-05',
+              notes: 'Still in original packaging',
+              customImageUrl: null,
+              lastUpdated: '1 day ago',
+            },
+            {
+              id: 106,
+              collectibleId: 8, // Luke Skywalker
+              userId: 'user123',
+              condition: 'Near Mint',
+              acquiredDate: '2024-01-25',
+              notes: 'Great figure from the series',
+              customImageUrl: null,
+              lastUpdated: '4 days ago',
+            },
+          ],
+        }
+      };
+      
+      return userItems[userId as keyof typeof userItems]?.[collectionId] || [];
+    };
+
+    const getCollectionItems = (collectionId: number, userId: string = 'user123') => {
+      const collectibles = getAllCollectibles(collectionId);
+      const userItems = getUserItems(userId, collectionId);
+      
+      return collectibles.map(collectible => {
+        const userItem = userItems.find(item => item.collectibleId === collectible.id);
+        
+        return {
+          ...collectible,
+          owned: !!userItem,
+          userItem: userItem || null,
+          condition: userItem?.condition || 'Not Owned',
+          lastUpdated: userItem?.lastUpdated || null,
+          notes: userItem?.notes || '',
+          customImageUrl: userItem?.customImageUrl || null,
+        };
+      });
+    };
+
+    // Initialize items for selected collection
+    React.useEffect(() => {
+      if (selectedCollectionId) {
+        const collectionItems = getCollectionItems(selectedCollectionId);
+        setItems(collectionItems);
+      }
+    }, [selectedCollectionId]);
 
     const handleAddItem = (newItem: any) => {
       const itemWithId = {
