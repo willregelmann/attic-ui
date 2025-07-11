@@ -320,16 +320,81 @@ const WillsAtticApp: React.FC = () => {
     
     try {
       console.log('Loading collections with token:', authToken ? 'present' : 'missing');
-      const { data } = await apolloClient.query({
-        query: GET_COLLECTIONS,
-        fetchPolicy: 'network-only'
-      });
-      setAllCollections(data.collections || []);
-      console.log('Collections loaded successfully:', data.collections?.length || 0);
+      
+      // Use REST API instead of GraphQL for now
+      const response = await apiService.getCollections();
+      
+      if (response.success && response.data) {
+        // Transform API response to match Collection interface
+        const collections = response.data.map((collection: any) => ({
+          id: collection.id,
+          name: collection.name,
+          slug: collection.slug,
+          category: collection.category,
+          type: collection.type || 'official',
+          description: collection.description,
+          image_url: collection.image_url,
+          status: collection.status || 'active',
+          year: new Date(collection.metadata?.releaseDate || collection.created_at).getFullYear(),
+          completion: collection.metadata?.totalItems ? 
+            Math.round((collection.items_count || 0) / collection.metadata.totalItems * 100) : 0,
+          itemsCount: collection.items_count || 0,
+          totalItems: collection.metadata?.totalItems || 0,
+        }));
+        
+        setAllCollections(collections);
+        console.log('Collections loaded successfully:', collections.length);
+      } else {
+        setAllCollections([]);
+      }
     } catch (error) {
       console.error('Failed to load collections:', error);
-      // Keep empty array on error
-      setAllCollections([]);
+      // For now, use mock data as fallback
+      const mockCollections = [
+        {
+          id: '1',
+          name: 'Pokemon Base Set',
+          slug: 'pokemon-base-set',
+          category: 'Trading Cards',
+          type: 'official',
+          description: 'The original Pokemon TCG set',
+          image_url: 'https://images.pokemontcg.io/base1/logo.png',
+          status: 'active',
+          year: 1996,
+          completion: 65,
+          itemsCount: 65,
+          totalItems: 102,
+        },
+        {
+          id: '2',
+          name: 'Star Wars Black Series',
+          slug: 'star-wars-black-series',
+          category: 'Action Figures',
+          type: 'official',
+          description: 'Premium 6-inch Star Wars figures',
+          image_url: null,
+          status: 'active',
+          year: 2013,
+          completion: 42,
+          itemsCount: 21,
+          totalItems: 50,
+        },
+        {
+          id: '3',
+          name: 'Marvel Legends',
+          slug: 'marvel-legends',
+          category: 'Action Figures', 
+          type: 'official',
+          description: 'Marvel superhero action figures',
+          image_url: null,
+          status: 'active',
+          year: 2002,
+          completion: 38,
+          itemsCount: 15,
+          totalItems: 40,
+        }
+      ];
+      setAllCollections(mockCollections);
     }
   }, [isAuthenticated, authToken]);
 

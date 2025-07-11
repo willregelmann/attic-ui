@@ -72,6 +72,51 @@ const MyCollectionScreen: React.FC<MyCollectionScreenProps> = ({
 
   // Personal items from API
   const [personalItems, setPersonalItems] = React.useState<PersonalItem[]>([]);
+  const [itemsLoading, setItemsLoading] = React.useState(false);
+  const [itemsError, setItemsError] = React.useState<string | null>(null);
+
+  // Fetch personal items when authenticated
+  React.useEffect(() => {
+    if (isAuthenticated && user) {
+      fetchPersonalItems();
+    }
+  }, [isAuthenticated, user]);
+
+  const fetchPersonalItems = async () => {
+    setItemsLoading(true);
+    setItemsError(null);
+    
+    try {
+      const response = await apiService.getMyItems();
+      
+      if (response.success && response.data) {
+        // Transform API response to match PersonalItem interface
+        const items = response.data.map((item: any) => ({
+          id: item.id,
+          name: item.name || item.collectible?.name || 'Unnamed Item',
+          description: item.personal_notes || item.collectible?.description,
+          category: item.collectible?.category || 'Uncategorized',
+          condition: 'Near Mint', // Default since API doesn't have condition field
+          acquiredDate: item.created_at || new Date().toISOString(),
+          lastUpdated: item.updated_at || item.created_at || new Date().toISOString(),
+          imageUrl: item.user_images?.[0] || item.collectible?.image_urls?.primary,
+          notes: item.personal_notes,
+          collectionId: item.collectible?.collection_id,
+          collectionName: item.collectible?.collection?.name,
+          isFavorite: item.is_favorite || false,
+          tags: [], // API doesn't have tags yet
+          location: item.location,
+        }));
+        
+        setPersonalItems(items);
+      }
+    } catch (error) {
+      console.error('Failed to fetch personal items:', error);
+      setItemsError('Failed to load your collection. Please try again.');
+    } finally {
+      setItemsLoading(false);
+    }
+  };
 
   const conditions = ['all', 'Mint', 'Near Mint', 'Lightly Played', 'Moderately Played', 'Heavily Played', 'Damaged'];
   
@@ -437,7 +482,23 @@ const MyCollectionScreen: React.FC<MyCollectionScreenProps> = ({
       </Card>
 
       {/* Items Display */}
-      {filteredAndSortedItems.length === 0 ? (
+      {itemsLoading ? (
+        <Card className="py-16">
+          <CardContent className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+            <p className="text-muted-foreground">Loading your collection...</p>
+          </CardContent>
+        </Card>
+      ) : itemsError ? (
+        <Card className="py-16">
+          <CardContent className="text-center">
+            <p className="text-destructive mb-4">{itemsError}</p>
+            <Button onClick={fetchPersonalItems} variant="outline">
+              Try Again
+            </Button>
+          </CardContent>
+        </Card>
+      ) : filteredAndSortedItems.length === 0 ? (
         <Card className="py-16">
           <CardContent className="text-center">
             <Package className="h-12 w-12 text-muted-foreground mx-auto mb-4" />

@@ -105,6 +105,77 @@ export class ApiService {
   async healthCheck() {
     return this.request('/health');
   }
+
+  // Collections endpoints
+  async getCollections() {
+    return this.request('/collections');
+  }
+
+  async getCollection(id: string) {
+    return this.request(`/collections/${id}`);
+  }
+
+  async createCollection(data: any) {
+    return this.request('/collections', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  }
+
+  async updateCollection(id: string, data: any) {
+    return this.request(`/collections/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    });
+  }
+
+  async deleteCollection(id: string) {
+    return this.request(`/collections/${id}`, {
+      method: 'DELETE',
+    });
+  }
+
+  // Items endpoints
+  async getMyItems() {
+    return this.request('/items');
+  }
+
+  async getItem(id: string) {
+    return this.request(`/items/${id}`);
+  }
+
+  async createItem(data: any) {
+    return this.request('/items', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  }
+
+  async updateItem(id: string, data: any) {
+    return this.request(`/items/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    });
+  }
+
+  async deleteItem(id: string) {
+    return this.request(`/items/${id}`, {
+      method: 'DELETE',
+    });
+  }
+
+  // Collectibles endpoints
+  async getCollectibles() {
+    return this.request('/collectibles');
+  }
+
+  async getCollectible(id: string) {
+    return this.request(`/collectibles/${id}`);
+  }
+
+  async searchCollectibles(query: string) {
+    return this.request(`/collectibles/search?q=${encodeURIComponent(query)}`);
+  }
 }
 
 // Create singleton instance with validated configuration
