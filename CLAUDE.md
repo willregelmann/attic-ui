@@ -38,18 +38,27 @@ Will's Attic is a comprehensive collectibles management application consisting o
 ### Main Feature Areas
 1. **Authentication Flow**: Google OAuth integration with JWT token handling
 2. **Collection Management**: Browse, view details, and track completion progress
-3. **Admin Interface**: Full CRUD operations for managing collection items
-4. **Dashboard**: Overview statistics and starred collections
-5. **Responsive Design**: Mobile-first UI with desktop optimization
+3. **Personal Collection Management**: "My Collection" screen for hobbyist collectors
+4. **Admin Interface**: Full CRUD operations for managing collection items
+5. **Dashboard**: Overview statistics and starred collections
+6. **Responsive Design**: Mobile-first UI with desktop optimization
 
 ### Application Navigation Structure
 ```
 App
-├── Authentication Screen (Google Sign-In)
-├── Home Dashboard (Statistics, starred collections, quick actions)
-├── Collections Browser (Search, filter, view all collections)
+├── My Collection (Default home page - personal collection management for hobbyists)
+│   ├── Integrated Authentication (Google Sign-In when not authenticated)
+│   ├── Personal Items Management (search, filter, sort, favorites)
+│   ├── Collection Statistics (total items, favorites, categories, recent activity)
+│   └── Quick Add Item Button
+├── Browse Collections (Search, filter, view all collections)
 ├── Collection Detail (Individual collection view with items)
-└── Admin Interface
+├── Add Item (Mobile-friendly form with camera support)
+│   ├── Smart Typeahead Search (for existing collectibles)
+│   ├── Multiple Image Upload (up to 5 photos)
+│   ├── Camera Integration (mobile camera capture)
+│   └── Streamlined Form (name, notes, favorite checkbox only)
+└── Admin Interface (User dropdown menu)
     ├── Collection Selection (Choose collection to manage)
     └── Item Management (Add, edit, delete items with forms)
 ```
@@ -94,11 +103,27 @@ VITE_API_BASE_URL=https://attic-pyhryhudn-will-regelmanns-projects.vercel.app
 
 ## Key Implementation Notes
 
+### My Collection Features (Primary Interface)
+- **Hobbyist Focus**: No value tracking or investment-focused features
+- **Smart Filtering**: Search, starred collections filter, sort by date/name/condition
+- **Personal Stats**: Total items, favorites, categories, recent additions (30 days)
+- **Grid/List Views**: Toggle between visual grid and detailed list view
+- **Integrated Authentication**: Seamless sign-in flow when not authenticated
+- **Mobile Optimized**: Touch-friendly interface with responsive design
+
+### Add Item Features (Mobile-First Design)
+- **Smart Typeahead**: Search existing collectibles with auto-linking to collections
+- **Multiple Photos**: Support for up to 5 images per item
+- **Camera Integration**: Direct camera capture with `capture="environment"` for rear camera
+- **File Upload**: Traditional gallery selection with `multiple` attribute support
+- **Streamlined Form**: Minimal fields (name, notes, favorite) for quick entry
+- **Custom Items**: Support for items not in existing collections
+
 ### Admin Interface Features
-- **Collection Selection**: Grid view of all available collections
-- **Item Management**: Add, edit, delete items with comprehensive forms
-- **Form Fields**: Name, number, type, rarity, condition, ownership, value, description
-- **Validation**: Required field checking and form state management
+- **Collection Management**: Grid view of all available collections
+- **Item CRUD Operations**: Add, edit, delete items with comprehensive forms
+- **User Dropdown Access**: Admin and dark mode toggle in user menu
+- **Form Validation**: Required field checking and state management
 - **Responsive Design**: Works on mobile and desktop devices
 
 ### Performance Optimizations
@@ -122,7 +147,15 @@ VITE_API_BASE_URL=https://attic-pyhryhudn-will-regelmanns-projects.vercel.app
 - **State**: React hooks for local component state management
 
 ### File Structure
-- `src/main.tsx`: Main application component with all screens
+- `src/main.tsx`: Main application component with HTML5 History API navigation
+- `src/components/screens/`: Individual screen components
+  - `MyCollectionScreen.tsx`: Primary interface with integrated auth (default home)
+  - `AddItemScreen.tsx`: Mobile-optimized item creation form
+  - `CollectionsScreen.tsx`: Browse all collections interface
+  - `CollectionDetailScreen.tsx`: Individual collection view
+  - `AdminScreen.tsx`: Collection management interface
+- `src/components/GoogleSignInButton.tsx`: Isolated Google OAuth component
+- `src/components/ErrorBoundary.tsx`: Error handling wrapper
 - `src/components/ui/`: ShadCN UI component library
 - `src/lib/utils.ts`: Utility functions for formatting and styling
 - `src/globals.css`: Global styles and Tailwind imports
@@ -130,12 +163,18 @@ VITE_API_BASE_URL=https://attic-pyhryhudn-will-regelmanns-projects.vercel.app
 ## Current Implementation Status
 
 ### ✅ Completed Features
-- **Google OAuth Authentication**: Working sign-in with Google Identity Services
-- **Home Dashboard**: Statistics overview and starred collections
-- **Collection Browser**: Search, filter, and view all collections
-- **Collection Detail**: Individual collection view with completion tracking
-- **Admin Interface**: Complete CRUD operations for managing collection items
-- **Responsive Design**: Mobile-first UI that works on all devices
+- **My Collection as Home Page**: Default landing page for authenticated users with integrated sign-in
+- **Hobbyist-Focused Design**: No value tracking, condition badges, or investment features
+- **Mobile-First Add Item**: Camera capture, multiple photos (up to 5), smart typeahead search
+- **Google OAuth Integration**: Isolated component with proper React patterns
+- **HTML5 History Navigation**: Browser back/forward button support
+- **User Dropdown Menu**: Admin access, dark mode toggle, sign out
+- **Smart Filtering**: Search, starred collections only, clear sort labeling
+- **Personal Statistics**: Total items, favorites, categories, recent additions
+- **Grid/List Toggle Views**: Visual grid and detailed list views for items
+- **Responsive Design**: Mobile-optimized interface that works on all devices
+- **Component Architecture**: Modular screens with proper hook usage patterns
+- **Error Boundaries**: Graceful error handling with detailed logging
 - **Deployment**: Live on Vercel at https://attic-ilwnq9i2k-will-regelmanns-projects.vercel.app
 
 ### 🚧 Future Enhancements
