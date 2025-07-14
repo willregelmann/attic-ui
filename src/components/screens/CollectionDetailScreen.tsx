@@ -1,17 +1,32 @@
 import React from 'react';
-import { Search, Grid3X3, List, ArrowLeft, Eye, Heart } from 'lucide-react';
+import { Search, Grid3X3, List, ArrowLeft, Eye, Heart, Package } from 'lucide-react';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { cn, formatPercentage } from '../../lib/utils';
 import type { Collection, ViewMode } from '../../types';
+import { apiService } from '../../services/ApiService';
 
 interface CollectionDetailScreenProps {
   selectedCollection: Collection | null;
   setCurrentScreen: (screen: string) => void;
   getAllCollectibles: (collectionId: number) => any[];
   getUserItems: (userId: string, collectionId: number) => any[];
+}
+
+interface CollectionItem {
+  id: string;
+  name: string;
+  number: string;
+  imageUrl?: string;
+  owned: boolean;
+  userItem: any;
+  condition: string;
+  lastUpdated?: string;
+  notes: string;
+  customImageUrl?: string;
+  wishlistCount?: number;
 }
 
 const CollectionDetailScreen: React.FC<CollectionDetailScreenProps> = ({
@@ -24,34 +39,127 @@ const CollectionDetailScreen: React.FC<CollectionDetailScreenProps> = ({
   const [selectedCondition, setSelectedCondition] = React.useState('all');
   const [selectedOwnership, setSelectedOwnership] = React.useState('all');
   const [viewMode, setViewMode] = React.useState<ViewMode>('grid');
+  
+  // API state
+  const [collectionDetails, setCollectionDetails] = React.useState<any>(null);
+  const [collectionItems, setCollectionItems] = React.useState<CollectionItem[]>([]);
+  const [userItems, setUserItems] = React.useState<any[]>([]);
+  const [loading, setLoading] = React.useState(false);
+  const [error, setError] = React.useState<string | null>(null);
 
   if (!selectedCollection) {
     return <div>No collection selected</div>;
   }
 
-  // Function to combine collectibles with user ownership data
-  const getCollectionItems = (collectionId: number, userId: string = 'user123') => {
-    const collectibles = getAllCollectibles(collectionId);
-    const userItems = getUserItems(userId, collectionId);
+  // Fetch collection details and items from API
+  React.useEffect(() => {
+    if (selectedCollection) {
+      fetchCollectionData();
+    }
+  }, [selectedCollection]);
+
+  const fetchCollectionData = async () => {
+    setLoading(true);
+    setError(null);
     
-    // Map collectibles to include user ownership data
+    try {
+      // Fetch collection details
+      const collectionResponse = await apiService.getCollection(selectedCollection.id.toString());
+      
+      if (collectionResponse.success) {
+        setCollectionDetails(collectionResponse.data);
+        
+        // Transform collectibles to match expected interface
+        const collectibles = collectionResponse.data?.collectibles || [];
+        const transformedItems: CollectionItem[] = collectibles.map((collectible: any) => ({
+          id: collectible.id,
+          name: collectible.name,
+          number: collectible.item_number || collectible.id,
+          imageUrl: collectible.image_urls?.primary,
+          owned: false, // Will be updated based on user items
+          userItem: null,
+          condition: 'Not Owned',
+          lastUpdated: undefined,
+          notes: '',
+          customImageUrl: undefined,
+          wishlistCount: undefined,
+        }));
+        
+        setCollectionItems(transformedItems);
+      }
+      
+      // Fetch user's items for this collection
+      try {
+        const userItemsResponse = await apiService.getMyItems();
+        if (userItemsResponse.success && userItemsResponse.data) {
+          const userCollectionItems = userItemsResponse.data.filter(
+            (item: any) => item.collectible?.collection_id === selectedCollection.id
+          );
+          
+          setUserItems(userCollectionItems);
+          
+          // Update collection items with user ownership data
+          setCollectionItems(prev => prev.map(item => {
+            const userItem = userCollectionItems.find(
+              (ui: any) => ui.collectible_id === item.id
+            );
+            
+            if (userItem) {
+              return {
+                ...item,
+                owned: true,
+                userItem,
+                condition: 'Near Mint', // Default since API doesn't have condition
+                lastUpdated: new Date(userItem.updated_at).toLocaleDateString(),
+                notes: userItem.personal_notes || '',
+                customImageUrl: userItem.user_images?.[0],
+              };
+            }
+            
+            return item;
+          }));
+        }
+      } catch (userError) {
+        console.log('Could not fetch user items (may not be authenticated)');
+      }
+      
+    } catch (error) {
+      console.error('Failed to fetch collection data:', error);
+      setError('Failed to load collection details. Please try again.');
+      
+      // Fallback to mock data
+      const mockItems = getCollectionItemsMock(selectedCollection.id);
+      setCollectionItems(mockItems);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Fallback function for mock data
+  const getCollectionItemsMock = (collectionId: number) => {
+    const collectibles = getAllCollectibles(collectionId);
+    const userItemsData = getUserItems('user123', collectionId);
+    
     return collectibles.map(collectible => {
-      const userItem = userItems.find(item => item.collectibleId === collectible.id);
+      const userItem = userItemsData.find(item => item.collectibleId === collectible.id);
       
       return {
-        ...collectible,
-        // User-specific data
+        id: collectible.id,
+        name: collectible.name,
+        number: collectible.number,
+        imageUrl: collectible.imageUrl,
         owned: !!userItem,
         userItem: userItem || null,
         condition: userItem?.condition || 'Not Owned',
-        lastUpdated: userItem?.lastUpdated || null,
+        lastUpdated: userItem?.lastUpdated || undefined,
         notes: userItem?.notes || '',
-        customImageUrl: userItem?.customImageUrl || null,
+        customImageUrl: userItem?.customImageUrl || undefined,
+        wishlistCount: collectible.wishlistCount,
       };
     });
   };
 
-  const allItems = getCollectionItems(selectedCollection.id);
+  const allItems = collectionItems;
   const conditions = ['all', 'Mint', 'Near Mint', 'Lightly Played', 'Not Owned'];
   const ownershipOptions = ['all', 'owned', 'not-owned'];
 
@@ -186,12 +294,31 @@ const CollectionDetailScreen: React.FC<CollectionDetailScreenProps> = ({
       </Card>
 
       {/* Items Display */}
-      <div className={cn(
-        viewMode === 'grid' 
-          ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6' 
-          : 'flex flex-col gap-4'
-      )}>
-        {filteredItems.map(item => (
+      {loading ? (
+        <Card className="py-16">
+          <CardContent className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+            <p className="text-muted-foreground">Loading collection items...</p>
+          </CardContent>
+        </Card>
+      ) : error ? (
+        <Card className="py-16">
+          <CardContent className="text-center">
+            <Package className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+            <h3 className="text-lg font-semibold mb-2">Error Loading Collection</h3>
+            <p className="text-muted-foreground mb-4">{error}</p>
+            <Button onClick={fetchCollectionData} variant="outline">
+              Try Again
+            </Button>
+          </CardContent>
+        </Card>
+      ) : (
+        <div className={cn(
+          viewMode === 'grid' 
+            ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6' 
+            : 'flex flex-col gap-4'
+        )}>
+          {filteredItems.map(item => (
           <Card 
             key={item.id} 
             className={cn(
@@ -261,10 +388,11 @@ const CollectionDetailScreen: React.FC<CollectionDetailScreenProps> = ({
               )}
             </CardContent>
           </Card>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
 
-      {filteredItems.length === 0 && (
+      {!loading && !error && filteredItems.length === 0 && (
         <Card className="py-16">
           <CardContent className="text-center">
             <Search className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
