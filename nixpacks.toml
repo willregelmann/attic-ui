@@ -1,0 +1,25 @@
+[providers]
+  nodejs = "18"
+
+[variables]
+  PORT = 3000
+
+[phases.setup]
+  nixPkgs = ["nodejs_18", "npm"]
+
+[phases.install]
+  cmds = [
+    "npm ci"
+  ]
+
+[phases.build]
+  cmds = [
+    "npm run build"
+  ]
+
+[phases.start]
+  cmd = "npm run preview -- --host 0.0.0.0 --port $PORT"
+
+[staticAssets]
+  [staticAssets.dist]
+    dir = "dist"
