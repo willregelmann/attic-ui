@@ -1,7 +1,7 @@
 providers = ["nodejs"]
 
 [variables]
-  PORT = 3000
+  PORT = "3000"
 
 [phases.setup]
   nixPkgs = ["nodejs", "npm"]
@@ -17,4 +17,4 @@ providers = ["nodejs"]
   ]
 
 [phases.start]
-  cmd = "npm run preview -- --host 0.0.0.0 --port $PORT"
+  cmd = "npm run preview -- --host 0.0.0.0 --port 3000"
