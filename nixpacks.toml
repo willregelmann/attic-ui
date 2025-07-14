@@ -1,10 +1,11 @@
-providers = ["nodejs"]
+[providers]
+  nodejs = "18"
 
 [variables]
   PORT = "3000"
 
 [phases.setup]
-  nixPkgs = ["nodejs", "npm"]
+  nixPkgs = ["nodejs_18", "npm"]
 
 [phases.install]
   cmds = [
