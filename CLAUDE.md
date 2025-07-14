@@ -17,15 +17,17 @@ Will's Attic is a comprehensive collectibles management application consisting o
 - **State Management**: React hooks (useState, useEffect)
 - **Authentication**: Google Identity Services (GSI)
 - **Build Tool**: Vite with TypeScript support
-- **Deployment**: Vercel static hosting
-- **Current URL**: https://attic-ilwnq9i2k-will-regelmanns-projects.vercel.app
+- **Deployment**: Railway with Vite preview server
+- **Production URL**: https://attic-ui-production.up.railway.app
+- **Local Development**: http://localhost:3000
 
 ### Backend API (Laravel)
 - **Framework**: Laravel (PHP)
 - **Authentication**: Google OAuth 2.0 + Laravel Sanctum
 - **Database**: PostgreSQL (hosted on Railway)
-- **Deployment**: Railway
-- **API Base URL**: https://attic-api-production.up.railway.app
+- **Deployment**: Railway with Docker
+- **Production API**: https://attic-api-production.up.railway.app
+- **Local API**: http://localhost:8080 (Docker)
 
 ## Application Architecture
 
@@ -77,21 +79,26 @@ const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 ```
 
 ### Data Management
-- **Collections**: Mock data with 6 predefined collections (Pokemon, Star Wars, Marvel, etc.)
-- **Items**: Generated dynamically with mock data for testing admin functionality
-- **Authentication**: Client-side Google OAuth without API backend dependency
-- **Future**: Integration with Laravel API for persistent data storage
+- **API Integration**: Connected to Laravel API for real-time data
+- **Authentication**: Google OAuth flow with Laravel Sanctum token management
+- **Collections**: Real data from PostgreSQL database via API
+- **State Management**: React hooks with API synchronization
+- **Local Development**: Configured to use local Docker API
 
 ## Development Commands
 
 ### Web Application Development
 ```bash
-# React + Vite development commands
+# Local development commands
 npm install                 # Install dependencies
-npm run dev                # Start Vite dev server
+npm run web                 # Start Vite dev server (connects to local API)
 npm run build              # Production build
-npm run preview            # Preview production build
-vercel --prod              # Deploy to Vercel production
+npm run preview            # Preview production build with Railway settings
+npm test                   # Run Jest tests
+npm run lint               # ESLint checking
+
+# Deployment (automatic via Railway GitHub integration)
+git push origin main       # Triggers Railway deployment
 ```
 
 ### Environment Setup
