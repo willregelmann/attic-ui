@@ -23,9 +23,9 @@ Will's Attic is a comprehensive collectibles management application consisting o
 ### Backend API (Laravel)
 - **Framework**: Laravel (PHP)
 - **Authentication**: Google OAuth 2.0 + Laravel Sanctum
-- **Database**: PostgreSQL/MySQL (hosted on Vercel)
-- **Deployment**: Vercel serverless functions
-- **API Base URL**: https://attic-pyhryhudn-will-regelmanns-projects.vercel.app
+- **Database**: PostgreSQL (hosted on Railway)
+- **Deployment**: Railway
+- **API Base URL**: https://attic-api-production.up.railway.app
 
 ## Application Architecture
 
@@ -98,7 +98,7 @@ vercel --prod              # Deploy to Vercel production
 ```bash
 # Required environment variables
 VITE_GOOGLE_CLIENT_ID=your_google_client_id
-VITE_API_BASE_URL=https://attic-pyhryhudn-will-regelmanns-projects.vercel.app
+VITE_API_BASE_URL=https://attic-api-production.up.railway.app/api
 ```
 
 ## Key Implementation Notes
